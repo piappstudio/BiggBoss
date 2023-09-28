@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
+    id ("dev.icerock.mobile.multiplatform-resources")
 }
 
 kotlin {
@@ -25,15 +26,19 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                implementation(compose.material)
+                // For material3
+                implementation(compose.material3)
+                // for icons
+                implementation(compose.materialIconsExtended)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
             }
         }
-        val androidMain by getting {
+        val  androidMain by getting {
+            dependsOn(commonMain)
             dependencies {
-                api("androidx.activity:activity-compose:1.7.2")
-                api("androidx.appcompat:appcompat:1.6.1")
+                api(libs.activity.compose)
+                api(libs.appcompat)
                 api("androidx.core:core-ktx:1.10.1")
             }
         }
@@ -56,7 +61,7 @@ kotlin {
 
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
-    namespace = "com.myapplication.common"
+    namespace = "com.piappstudio.common"
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
@@ -72,4 +77,11 @@ android {
     kotlin {
         jvmToolchain(17)
     }
+}
+dependencies {
+    implementation(libs.material3)
+    commonMainApi(libs.bundles.moko.resources)
+}
+multiplatformResources {
+    multiplatformResourcesPackage = "com.biggboss.shared" // required
 }

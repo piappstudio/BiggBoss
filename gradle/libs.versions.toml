@@ -1,0 +1,52 @@
+# For famous libraries https://github.com/terrakok/kmp-awesome#-compose-ui
+[versions]
+activityCompose = "1.7.2"
+appcompat = "1.6.1"
+kotlin-coroutine-version = "1.7.3"
+koin-version = "3.5.0"
+material3 = "1.1.2"
+voyagerVersion = "1.0.0-rc05"
+ktor-version = "2.3.4"
+napierVersion = "2.6.1"
+git-live-firebase = "1.10.0"
+moko-version = "0.23.0"
+
+[libraries]
+# For logging https://github.com/AAkira/Napier
+activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+napier-log =  {group = "io.github.aakira", name = "napier", version.ref = "napierVersion"}
+
+# For coroutine
+kotlinx-coroutines-core = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutine-version"}
+
+# For dependency injection https://insert-koin.io/docs/quickstart/kmm
+koin-core = {group="io.insert-koin", name = "koin-core", version.ref = "koin-version"}
+
+# For navigation https://voyager.adriel.cafe/
+voyager-navigator =  {group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref= "voyagerVersion"}
+voyager-bottom-sheet =  {group = "cafe.adriel.voyager", name = "voyager-bottom-sheet-navigator", version.ref= "voyagerVersion"}
+voyager-tab-navigator =  {group = "cafe.adriel.voyager", name = "voyager-tab-navigator", version.ref= "voyagerVersion"}
+voyager-transitions =  {group = "cafe.adriel.voyager", name = "voyager-transitions", version.ref= "voyagerVersion"}
+
+# For network https://ktor.io/docs/client-logging.html#install_plugin
+ktor-bom = {group = "io.ktor", name = "ktor-bom", version.ref= "ktor-version"}
+ktor-client-core = {group = "io.ktor", name = "ktor-client-core"}
+
+
+# For firebase: https://github.com/GitLiveApp/firebase-kotlin-sdk
+git-live-auth = {group = "dev.gitlive", name = "firebase-auth", version.ref = "git-live-firebase"}
+git-live-realtime-datababse= {group = "dev.gitlive", name = "firebase-database", version.ref = "git-live-firebase"}
+
+# For resource access
+moko-classpath =  {group = "dev.icerock.moko", name = "resources-generator", version.ref = "moko-version"}
+moko-resource = {group = "dev.icerock.moko", name = "resources", version.ref = "moko-version"}
+moko-resource-compose = {group = "dev.icerock.moko", name = "resources-compose", version.ref = "moko-version"}
+
+
+[bundles]
+voyager = ["voyager-navigator", "voyager-bottom-sheet", "voyager-tab-navigator", "voyager-transitions"]
+moko-resources = ["moko-resource", "moko-resource-compose"]
+[plugins]
+moko-multiplatform = {id="dev.icerock.mobile.multiplatform-resources", version.ref = "moko-version"}

@@ -3,13 +3,18 @@
 activityCompose = "1.7.2"
 appcompat = "1.6.1"
 kotlin-coroutine-version = "1.7.3"
-koin-version = "3.5.0"
+koin-version = "1.1.0"
 material3 = "1.1.2"
+slf4jLog4j1 = "1.7.29"
 voyagerVersion = "1.0.0-rc05"
 ktor-version = "2.3.4"
 napierVersion = "2.6.1"
 git-live-firebase = "1.10.0"
 moko-version = "0.23.0"
+plugin-serialization-version = "1.9.0"
+serialization-json-verison = "1.6.0"
+kamel-image-version = "0.7.3"
+moko-viewmodel-version = "0.16.1"
 
 [libraries]
 # For logging https://github.com/AAkira/Napier
@@ -22,17 +27,27 @@ napier-log =  {group = "io.github.aakira", name = "napier", version.ref = "napie
 kotlinx-coroutines-core = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutine-version"}
 
 # For dependency injection https://insert-koin.io/docs/quickstart/kmm
-koin-core = {group="io.insert-koin", name = "koin-core", version.ref = "koin-version"}
+koin-compose = {group="io.insert-koin", name = "koin-compose", version.ref = "koin-version"}
 
 # For navigation https://voyager.adriel.cafe/
+slf4j-log4j1 = { module = "org.slf4j:slf4j-log4j1", version.ref = "slf4jLog4j1" }
 voyager-navigator =  {group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref= "voyagerVersion"}
 voyager-bottom-sheet =  {group = "cafe.adriel.voyager", name = "voyager-bottom-sheet-navigator", version.ref= "voyagerVersion"}
 voyager-tab-navigator =  {group = "cafe.adriel.voyager", name = "voyager-tab-navigator", version.ref= "voyagerVersion"}
 voyager-transitions =  {group = "cafe.adriel.voyager", name = "voyager-transitions", version.ref= "voyagerVersion"}
+# For koin integration https://voyager.adriel.cafe/screenmodel/koin-integration
+voyager-koin =  {module = "cafe.adriel.voyager:voyager-koin", version.ref= "voyagerVersion"}
 
 # For network https://ktor.io/docs/client-logging.html#install_plugin
 ktor-bom = {group = "io.ktor", name = "ktor-bom", version.ref= "ktor-version"}
-ktor-client-core = {group = "io.ktor", name = "ktor-client-core"}
+ktor-client-core = {group = "io.ktor", name = "ktor-client-core", version.ref= "ktor-version"}
+ktor-android = {group = "io.ktor", name = "ktor-client-android", version.ref = "ktor-version" }
+ktor-ios = {group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor-version"}
+ktor-desktop = {group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor-version"}
+
+# To access content negotiation
+ktor-client-content-negotiation = {group = "io.ktor", name = "ktor-client-content-negotiation", version.ref= "ktor-version"}
+ktor-serialization-kotlinx-json = {group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref= "ktor-version"}
 
 
 # For firebase: https://github.com/GitLiveApp/firebase-kotlin-sdk
@@ -44,9 +59,15 @@ moko-classpath =  {group = "dev.icerock.moko", name = "resources-generator", ver
 moko-resource = {group = "dev.icerock.moko", name = "resources", version.ref = "moko-version"}
 moko-resource-compose = {group = "dev.icerock.moko", name = "resources-compose", version.ref = "moko-version"}
 
+#serialization
+serialization-json = {group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json-verison"}
+#Asyn image loading
+kamel-image = {group = "media.kamel", name = "kamel-image", version.ref = "kamel-image-version"}
 
 [bundles]
-voyager = ["voyager-navigator", "voyager-bottom-sheet", "voyager-tab-navigator", "voyager-transitions"]
+voyager = ["voyager-navigator", "voyager-bottom-sheet", "voyager-tab-navigator", "voyager-transitions", "voyager-koin"]
 moko-resources = ["moko-resource", "moko-resource-compose"]
+ktor = ["ktor-client-core", "ktor-client-content-negotiation", "ktor-serialization-kotlinx-json"]
 [plugins]
 moko-multiplatform = {id="dev.icerock.mobile.multiplatform-resources", version.ref = "moko-version"}
+plugin-serialization = {id ="plugin.serialization", version.ref="plugin-serialization-version"}

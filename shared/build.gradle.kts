@@ -1,8 +1,12 @@
+import org.jetbrains.kotlin.ir.backend.js.compile
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
     id ("dev.icerock.mobile.multiplatform-resources")
+    kotlin("plugin.serialization") version "1.9.0"
+
 }
 
 kotlin {
@@ -26,12 +30,32 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
+                implementation(compose.material)
                 // For material3
                 implementation(compose.material3)
                 // for icons
                 implementation(compose.materialIconsExtended)
+                implementation(libs.serialization.json)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+
+                // For DI
+                implementation(libs.koin.compose)
+
+                // For networking
+                implementation(libs.bundles.ktor)
+
+                // For navigation
+                implementation( libs.bundles.voyager)
+
+                // For async image loading
+                implementation(libs.kamel.image)
+
+                // For logging
+                implementation(libs.napier.log)
+
+
+
             }
         }
         val  androidMain by getting {
@@ -39,7 +63,9 @@ kotlin {
             dependencies {
                 api(libs.activity.compose)
                 api(libs.appcompat)
-                api("androidx.core:core-ktx:1.10.1")
+
+                api("androidx.core:core-ktx:1.12.0")
+                implementation(libs.ktor.android)
             }
         }
         val iosX64Main by getting
@@ -50,10 +76,18 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
+            dependencies {
+                implementation(libs.ktor.ios)
+            }
         }
         val desktopMain by getting {
+            dependsOn(commonMain)
             dependencies {
                 implementation(compose.desktop.common)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.desktop)
+                implementation ("org.slf4j:slf4j-log4j12:1.7.29")
+
             }
         }
     }
@@ -81,6 +115,7 @@ android {
 dependencies {
     implementation(libs.material3)
     commonMainApi(libs.bundles.moko.resources)
+
 }
 multiplatformResources {
     multiplatformResourcesPackage = "com.biggboss.shared" // required

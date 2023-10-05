@@ -14,21 +14,43 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.core.registry.ScreenRegistry
+import cafe.adriel.voyager.core.registry.screenModule
+import cafe.adriel.voyager.navigator.Navigator
 import com.biggboss.shared.MR
 import dev.icerock.moko.resources.compose.*
+import di.BiggBossScreen
+import di.appModule
+import di.bbScreenModule
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.koin.compose.KoinApplication
+import org.koin.dsl.koinApplication
+import ui.home.HomeScreen
 import ui.theme.BiggBossAppTheme
 
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
-    BiggBossAppTheme {
+
+    KoinApplication(application = {
+        modules(appModule())
+    }) {
+        ScreenRegistry {
+            screenModule { bbScreenModule() }
+        }
+        BiggBossAppTheme {
+            Navigator(screen = HomeScreen())
+        }
+    }
+}
+
+@Composable
+fun SplashScreen() {
         val app_name: String = stringResource(MR.strings.app_name)
 
         var greetingText by remember { mutableStateOf("Hello, World! $app_name") }
         var showImage by remember { mutableStateOf(false) }
-
 
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -48,7 +70,7 @@ fun App() {
                 }
             }
         }
-    }
+
 }
 
 

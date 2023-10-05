@@ -54,6 +54,8 @@ kotlin {
                 // For logging
                 implementation(libs.napier.log)
 
+                implementation(libs.kotlinx.datetime)
+
 
 
             }
@@ -63,7 +65,7 @@ kotlin {
             dependencies {
                 api(libs.activity.compose)
                 api(libs.appcompat)
-
+                implementation(libs.compose.preview)
                 api("androidx.core:core-ktx:1.12.0")
                 implementation(libs.ktor.android)
             }
@@ -83,6 +85,7 @@ kotlin {
         val desktopMain by getting {
             dependsOn(commonMain)
             dependencies {
+                implementation(libs.compose.preview)
                 implementation(compose.desktop.common)
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.desktop)

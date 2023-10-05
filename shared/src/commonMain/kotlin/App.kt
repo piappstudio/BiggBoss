@@ -29,16 +29,15 @@ import ui.home.HomeScreen
 import ui.theme.BiggBossAppTheme
 
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
 
+    ScreenRegistry {
+        screenModule { bbScreenModule() }
+    }
     KoinApplication(application = {
         modules(appModule())
     }) {
-        ScreenRegistry {
-            screenModule { bbScreenModule() }
-        }
         BiggBossAppTheme {
             Navigator(screen = HomeScreen())
         }

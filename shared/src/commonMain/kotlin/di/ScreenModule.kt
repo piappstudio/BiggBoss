@@ -2,12 +2,13 @@ package di
 
 import cafe.adriel.voyager.core.registry.ScreenProvider
 import cafe.adriel.voyager.core.registry.screenModule
-import ui.Detail.ShowDetailScreen
+import model.ShowItem
+import ui.detail.ShowDetailScreen
 import ui.home.HomeScreen
 
 sealed class BiggBossScreen:ScreenProvider {
     object Shows:BiggBossScreen()
-    data class ShowDetail(val id:String):BiggBossScreen()
+    data class ShowDetail(val showItem: ShowItem):BiggBossScreen()
 }
 
 val bbScreenModule = screenModule {
@@ -15,6 +16,6 @@ val bbScreenModule = screenModule {
         HomeScreen()
     }
     register<BiggBossScreen.ShowDetail> { provider->
-        ShowDetailScreen(provider.id)
+        ShowDetailScreen(provider.showItem)
     }
 }

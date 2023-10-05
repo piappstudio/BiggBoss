@@ -8,6 +8,7 @@ import org.koin.compose.getKoin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.module
+import ui.detail.ShowDetailModel
 import ui.home.HomeScreenModel
 
 @Composable
@@ -24,4 +25,8 @@ val viewModel = module {
     factory {
         HomeScreenModel(get())
     }
+    factory {
+        ShowDetailModel(get())
+    }
+
 }

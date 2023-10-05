@@ -65,3 +65,7 @@ val md_theme_dark_scrim = Color(0xFF000000)
 
 
 val seed = Color(0xFF984061)
+
+val captain = Color(0xFF2E9F49)
+val evicted = Color(0xFFEA4839)
+val nominated = Color(0xFFFCBC1F)

@@ -15,10 +15,17 @@ plugin-serialization-version = "1.9.0"
 serialization-json-verison = "1.6.0"
 kamel-image-version = "0.7.3"
 moko-viewmodel-version = "0.16.1"
+compose_version = "1.5.1"
+kotlinx-datetime-version = "0.4.1"
 
 [libraries]
+
+# Date time
+kotlinx-datetime = {group = "org.jetbrains.kotlinx",name = "kotlinx-datetime", version.ref = "kotlinx-datetime-version" }
+
 # For logging https://github.com/AAkira/Napier
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+compose-preview = {group = "org.jetbrains.compose.ui",name = "ui-tooling-preview", version.ref = "compose_version" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 napier-log =  {group = "io.github.aakira", name = "napier", version.ref = "napierVersion"}

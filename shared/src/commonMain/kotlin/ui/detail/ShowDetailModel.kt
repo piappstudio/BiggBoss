@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import model.ShowDetail
+import model.ShowItem
 import network.PiRepository
 import network.Resource
 

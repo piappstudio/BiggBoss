@@ -86,7 +86,7 @@ class HomeScreen : Screen {
 
                     is HomeScreenState.Success -> {
                         RenderHomeScreen((state as HomeScreenState.Success).showList, onClick = {item->
-                            currentNav.push(ShowDetailScreen(item))
+                            currentNav.push(ShowDetailScreen(title = item.title?:IConstant.EMPTY, url= item.moreInfo?:IConstant.EMPTY))
                         }) { youtube ->
                             youtube.url?.let {
                                 homeScreenModel.linkLauncher.openLink(youtube.url)

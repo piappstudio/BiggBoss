@@ -2,6 +2,7 @@ package model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 
 @Serializable
@@ -41,6 +42,15 @@ data class ParticipantItem(
 	val history: List<HistoryItem>? = null
 )
 
+
+inline fun <reified T> parseJsonToData(jsonString: String):T?{
+	return try {
+		val json = Json { ignoreUnknownKeys = true }
+		json.decodeFromString(jsonString)
+	} catch (e: Exception) {
+		null
+	}
+}
 @Serializable
 data class ReviewerItem(
 
@@ -52,6 +62,7 @@ data class ReviewerItem(
 
 	@SerialName("url")
 	val url: String? = null,
+
 	@SerialName("description")
 	val description:String? = null
 )

@@ -23,6 +23,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -33,6 +38,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import di.getScreenModel
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import kotlinx.serialization.json.Json
 import model.HistoryItem
 import model.IConstant
 import model.ParticipantItem
@@ -40,9 +46,15 @@ import model.piShadow
 import ui.native.LinkLauncher
 import ui.theme.Dimens
 
-class ParticipantDetailScreen (private val participantItem: ParticipantItem): Screen {
+class ParticipantDetailScreen (val query:String): Screen {
+
     @Composable
     override fun Content() {
+        var participantItem by remember { mutableStateOf(ParticipantItem()) }
+        LaunchedEffect(query) {
+            val json = Json { prettyPrint = true }
+            participantItem = json.decodeFromString<ParticipantItem>(query)
+        }
         val navigator = LocalNavigator.currentOrThrow
         val participantDetailViewModel = getScreenModel<ParticipantDetailViewModel>()
 

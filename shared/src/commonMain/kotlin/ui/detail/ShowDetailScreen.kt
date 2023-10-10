@@ -47,6 +47,8 @@ import dev.icerock.moko.resources.compose.stringResource
 import di.getScreenModel
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import model.IConstant
 import model.ParticipantItem
 import model.ShowDetail
@@ -60,20 +62,20 @@ import ui.theme.captain
 import ui.theme.evicted
 import ui.theme.nominated
 
-class ShowDetailScreen(private val showItem: ShowItem) : Screen {
+class ShowDetailScreen(private val title: String, val url:String) : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val detailModel = getScreenModel<ShowDetailModel>()
-        LaunchedEffect(showItem) {
-            showItem.moreInfo?.let { detailModel.fetchShowDetails(it) }
+        LaunchedEffect(url) {
+            detailModel.fetchShowDetails(url)
         }
         val state by detailModel.showDetailState.collectAsState()
         Scaffold(topBar = {
             TopAppBar(title = {
-                Text(showItem.title ?: IConstant.EMPTY)
+                Text(title)
             }, navigationIcon = {
                 IconButton(onClick = {
                     navigator.pop()
@@ -176,7 +178,9 @@ class ShowDetailScreen(private val showItem: ShowItem) : Screen {
     fun RenderContestantRow(participant: ParticipantItem) {
         val navigator = LocalNavigator.currentOrThrow
         Surface (modifier = Modifier.piShadow().clickable {
-            navigator.push(ParticipantDetailScreen(participant))
+            val json = Json { ignoreUnknownKeys = true }
+            val jsonParticipantItem = json.encodeToString(participant)
+            navigator.push(ParticipantDetailScreen(jsonParticipantItem))
         }) {
             Column {
                 Row(

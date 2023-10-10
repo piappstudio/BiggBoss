@@ -56,7 +56,7 @@ kotlin {
                 implementation(libs.kermit.log)
 
                 implementation(libs.kotlinx.datetime)
-
+                implementation(libs.google.code.gson )
 
 
             }
@@ -119,6 +119,8 @@ android {
 dependencies {
     implementation(libs.material3)
     commonMainApi(libs.bundles.moko.resources)
+    testImplementation(libs.junit)
+
 
 }
 multiplatformResources {

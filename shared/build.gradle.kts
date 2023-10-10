@@ -53,6 +53,7 @@ kotlin {
 
                 // For logging
                 implementation(libs.napier.log)
+                implementation(libs.kermit.log)
 
                 implementation(libs.kotlinx.datetime)
 

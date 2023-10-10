@@ -1,24 +1,19 @@
 package ui.home
 
-import androidx.compose.runtime.collectAsState
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import di.viewModel
-import io.github.aakira.napier.Napier
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import model.ShowList
 import network.PIError
 import network.PiRepository
 import network.Resource
+import ui.native.LinkLauncher
 
 /**
  * Defined all possible states here
@@ -49,7 +44,7 @@ private data class HomeState(
     }
 }
 
-class HomeScreenModel(private val piRepository: PiRepository) : ScreenModel {
+class HomeScreenModel(private val piRepository: PiRepository, val linkLauncher: LinkLauncher) : ScreenModel {
 
     private val _homeState = MutableStateFlow(HomeState())
     private val _homeScreenState: MutableStateFlow<HomeScreenState> =
@@ -59,7 +54,7 @@ class HomeScreenModel(private val piRepository: PiRepository) : ScreenModel {
     fun fetchShows() {
         coroutineScope.launch (Dispatchers.IO) {
             piRepository.fetchShows().collect { response ->
-                Napier.d("Result: $response")
+                Logger.i("Result: $response")
                 when (response.status) {
                     Resource.Status.ERROR -> {
                         _homeState.update { it.copy(isLoading = false, piError = response.error) }
@@ -70,7 +65,7 @@ class HomeScreenModel(private val piRepository: PiRepository) : ScreenModel {
                     }
 
                     else -> {
-                        Napier.d(message = response.data?.toString() ?: "")
+                        Logger.d( response.data?.toString() ?: "")
                         _homeState.update {
                             it.copy(
                                 isLoading = false,

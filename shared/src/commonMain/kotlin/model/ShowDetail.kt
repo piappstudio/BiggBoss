@@ -7,9 +7,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ShowDetail(
 
-	@SerialName("reviewers")
-	val reviewers: List<ReviewerItem>? = null,
-
 	@SerialName("participants")
 	val participants: List<ParticipantItem>? = null
 )
@@ -35,7 +32,13 @@ data class ParticipantItem(
 	@SerialName("isCaptain")
 	val isCaptain: Boolean? = null,
 
+	@SerialName("full_image")
+	val fullImage:String?=null,
 
+	@SerialName("dial_number")
+	val dialNumber:String? = null,
+	@SerialName("history")
+	val history: List<HistoryItem>? = null
 )
 
 @Serializable
@@ -48,5 +51,7 @@ data class ReviewerItem(
 	val image: String? = null,
 
 	@SerialName("url")
-	val url: String? = null
+	val url: String? = null,
+	@SerialName("description")
+	val description:String? = null
 )

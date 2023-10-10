@@ -2,8 +2,11 @@
 <resources>
     <string name="app_name">BiggBoss</string>
     <string name = "title_home">Dashboard</string>
-    <string name="title_contestant">Contestants</string>
+    <string name="title_captain">Captain</string>
     <string name = "error_empty_contestant">Please wait.. we are update the contestant list</string>
     <string name="title_youtubers">Youtube</string>
     <string name="error_empty_youtube">Please wait.. we are updating the youtubers list</string>
+    <string name= "title_nomination">Nominations</string>
+    <string name= "title_others">Other</string>
+    <string name = "title_eliminated">Eliminated</string>
 </resources>

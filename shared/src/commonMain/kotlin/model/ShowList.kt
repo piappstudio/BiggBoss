@@ -4,7 +4,9 @@ import kotlinx.serialization.*
 @Serializable
 data class ShowList(
 	@SerialName("shows")
-	val shows: List<ShowItem>? = null
+	val shows: List<ShowItem>? = null,
+	@SerialName("reviewers")
+	val reviewers: List<ReviewerItem>? = null,
 )
 
 @Serializable

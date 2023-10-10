@@ -10,6 +10,8 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.module
 import ui.detail.ShowDetailModel
 import ui.home.HomeScreenModel
+import ui.native.LinkLauncher
+import ui.participant.ParticipantDetailViewModel
 
 @Composable
 public inline fun <reified T : ScreenModel> Screen.getScreenModel(
@@ -21,12 +23,18 @@ public inline fun <reified T : ScreenModel> Screen.getScreenModel(
 }
 
 val viewModel = module {
-
+    single {
+        LinkLauncher()
+    }
     factory {
-        HomeScreenModel(get())
+        HomeScreenModel(get(), get())
     }
     factory {
         ShowDetailModel(get())
+    }
+
+    factory {
+        ParticipantDetailViewModel(get(), get())
     }
 
 }

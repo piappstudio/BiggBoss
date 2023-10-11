@@ -8,6 +8,8 @@ import kotlinx.serialization.json.Json
 @Serializable
 data class ShowDetail(
 
+	@SerialName("voting_options")
+	val votingOption: VotingOption?=null,
 	@SerialName("participants")
 	val participants: List<ParticipantItem>? = null
 )

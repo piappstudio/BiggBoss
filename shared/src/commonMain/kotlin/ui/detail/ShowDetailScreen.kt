@@ -15,13 +15,13 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.IconButton
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -52,7 +52,7 @@ import kotlinx.serialization.json.Json
 import model.IConstant
 import model.ParticipantItem
 import model.ShowDetail
-import model.ShowItem
+import model.VotingOption
 import model.piShadow
 import network.Resource
 import ui.component.PiProgressIndicator
@@ -129,24 +129,24 @@ class ShowDetailScreen(private val title: String, val url:String) : Screen {
 
                 val lstCaptain = data.participants.filter { it.isCaptain == true }
                 if (lstCaptain.isNotEmpty()) {
-                    renderSection( MR.strings.title_captain,this, lstCaptain, this@ShowDetailScreen)
+                    renderSection( MR.strings.title_captain,this, lstCaptain, this@ShowDetailScreen, data)
                 }
 
                 val lstNominated = data.participants.filter { it.isNominated == true }
 
                 if (lstNominated.isNotEmpty()) {
-                    renderSection( MR.strings.title_nomination,this, lstNominated, this@ShowDetailScreen)
+                    renderSection( MR.strings.title_nomination,this, lstNominated, this@ShowDetailScreen, data)
                 }
 
                 val lstEliminated = data.participants.filter { it.eliminatedDate?.isNotEmpty() == true }
                 if (lstEliminated.isNotEmpty()) {
-                    renderSection(MR.strings.title_eliminated, this, lstEliminated, this@ShowDetailScreen)
+                    renderSection(MR.strings.title_eliminated, this, lstEliminated, this@ShowDetailScreen, data)
                 }
 
                 val lstOthers =
                     data.participants.filter { it.isNominated != true && it.isCaptain != true && it.eliminatedDate.isNullOrEmpty() }
                 if (lstOthers.isNotEmpty()) {
-                    renderSection( MR.strings.title_others,this, lstOthers, this@ShowDetailScreen)
+                    renderSection( MR.strings.title_others,this, lstOthers, this@ShowDetailScreen, data)
                 }
             }
 
@@ -157,7 +157,8 @@ class ShowDetailScreen(private val title: String, val url:String) : Screen {
         title: StringResource,
         lazyListScope: LazyListScope,
         lstNominated: List<ParticipantItem>,
-        showDetailScreen: ShowDetailScreen
+        showDetailScreen: ShowDetailScreen,
+        data: ShowDetail
     ) {
         lazyListScope.item {
             Text(
@@ -168,19 +169,20 @@ class ShowDetailScreen(private val title: String, val url:String) : Screen {
             Spacer(modifier = Modifier.padding(bottom = Dimens.doubleSpace))
         }
         lazyListScope.items(lstNominated) { participant ->
-            showDetailScreen.RenderContestantRow(participant)
+            showDetailScreen.RenderContestantRow(participant, data.votingOption?: VotingOption())
             Spacer(modifier = Modifier.height(Dimens.space))
         }
     }
 
 
     @Composable
-    fun RenderContestantRow(participant: ParticipantItem) {
+    fun RenderContestantRow(participant: ParticipantItem, votingOption: VotingOption) {
         val navigator = LocalNavigator.currentOrThrow
-        Surface (modifier = Modifier.piShadow().clickable {
+        ElevatedCard  (modifier = Modifier.piShadow().clickable {
             val json = Json { ignoreUnknownKeys = true }
             val jsonParticipantItem = json.encodeToString(participant)
-            navigator.push(ParticipantDetailScreen(jsonParticipantItem))
+            val jsonVotingOption = json.encodeToString(votingOption)
+            navigator.push(ParticipantDetailScreen(jsonParticipantItem, jsonVotingOption))
         }) {
             Column {
                 Row(

@@ -41,28 +41,36 @@ import io.kamel.image.asyncPainterResource
 import kotlinx.serialization.json.Json
 import model.HistoryItem
 import model.IConstant
+import model.LinkType
+import model.OfficialVoteItem
 import model.ParticipantItem
+import model.VotingOption
 import model.piShadow
 import ui.native.LinkLauncher
 import ui.theme.Dimens
 
-class ParticipantDetailScreen (val query:String): Screen {
+class ParticipantDetailScreen(private val query: String, private val strVotingOption: String) :
+    Screen {
 
     @Composable
     override fun Content() {
         var participantItem by remember { mutableStateOf(ParticipantItem()) }
+        var votingOption by remember { mutableStateOf(VotingOption()) }
         LaunchedEffect(query) {
             val json = Json { prettyPrint = true }
             participantItem = json.decodeFromString<ParticipantItem>(query)
+            votingOption = json.decodeFromString<VotingOption>(strVotingOption)
         }
         val navigator = LocalNavigator.currentOrThrow
         val participantDetailViewModel = getScreenModel<ParticipantDetailViewModel>()
 
-        Scaffold  {
-            Column  (modifier = Modifier.padding(it).fillMaxWidth().verticalScroll(rememberScrollState())) {
+        Scaffold {
+            Column(
+                modifier = Modifier.padding(it).fillMaxWidth().verticalScroll(rememberScrollState())
+            ) {
                 Box {
 
-                    participantItem.fullImage?.let { url->
+                    participantItem.fullImage?.let { url ->
                         KamelImage(
                             resource = asyncPainterResource(url),
                             contentDescription = "Logo",
@@ -73,59 +81,108 @@ class ParticipantDetailScreen (val query:String): Screen {
                     IconButton(onClick = {
                         navigator.pop()
                     }, modifier = Modifier.padding(Dimens.space)) {
-                        Icon(imageVector = Icons.Default.ArrowBack, tint = Color.White, contentDescription = "Back Button")
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            tint = Color.White,
+                            contentDescription = "Back Button"
+                        )
                     }
                 }
 
-                Text(participantItem.name?:IConstant.EMPTY, modifier = Modifier.padding(Dimens.doubleSpace), style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.ExtraBold)
+                Text(
+                    participantItem.name ?: IConstant.EMPTY,
+                    modifier = Modifier.padding(Dimens.doubleSpace),
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.ExtraBold
+                )
 
                 if (participantItem.isNominated == true) {
-                    Spacer(modifier = Modifier.height(Dimens.doubleSpace))
-                    Text(
-                        "Official Voting Options",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.ExtraBold,
-                        modifier = Modifier.padding(Dimens.doubleSpace)
-                    )
-                    Surface(modifier = Modifier.padding(Dimens.doubleSpace).piShadow()) {
-                        Column {
-                            VoteOptionRow("Disney + HOTSTAR - BIGG BOSS 7 Page") {
 
+                    // Official vote option
+                    votingOption.officialVote?.let { lstOptions ->
+                        val mutOfficialVote = mutableListOf<OfficialVoteItem>()
+                        mutOfficialVote.addAll(lstOptions)
+                        mutOfficialVote.add(
+                            OfficialVoteItem(
+                                name = "Missed Call to +91${participantItem.dialNumber}",
+                                link = "+91${participantItem.dialNumber}",
+                                type = LinkType.DIAL
+                            )
+                        )
+
+                        Spacer(modifier = Modifier.height(Dimens.doubleSpace))
+                        Text(
+                            "Official Voting Options",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier.padding(Dimens.doubleSpace)
+                        )
+                        Surface(modifier = Modifier.padding(Dimens.doubleSpace).piShadow()) {
+                            Column {
+                                mutOfficialVote.forEach { voteItem ->
+                                    VoteOptionRow(voteItem.name ?: IConstant.EMPTY) {
+                                        when (voteItem.type) {
+                                            LinkType.URL -> {
+                                                voteItem.link?.let { link ->
+                                                    participantDetailViewModel.linkLauncher.openLink(
+                                                        link
+                                                    )
+                                                }
+                                            }
+
+                                            LinkType.DIAL -> {
+                                                voteItem.link?.let { link ->
+                                                    participantDetailViewModel.linkLauncher.dialNumber(
+                                                        link
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                            VoteOptionRow(participantItem.dialNumber ?: IConstant.EMPTY) {
-                                participantDetailViewModel.linkLauncher.dialNumber("+91${participantItem.dialNumber ?: IConstant.EMPTY}")
+
+                        }
+                    }
+
+                    // Unofficial vote option
+                    votingOption.unofficialVoting?.let { lstUnOfficaOption ->
+                        Spacer(modifier = Modifier.height(Dimens.doubleSpace))
+                        Text(
+                            "Unofficial Voting Option",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier.padding(Dimens.doubleSpace)
+                        )
+                        Surface(modifier = Modifier.padding(Dimens.doubleSpace).piShadow()) {
+                            Column {
+                                lstUnOfficaOption.forEach { unOfficialOption ->
+                                    VoteOptionRow(unOfficialOption.name ?: IConstant.EMPTY) {
+                                        participantDetailViewModel.linkLauncher.openLink(
+                                            unOfficialOption.link ?: IConstant.EMPTY
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(Dimens.doubleSpace))
-                    Text(
-                        "Unofficial Voting Option",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.ExtraBold,
-                        modifier = Modifier.padding(Dimens.doubleSpace)
-                    )
-                    Surface(modifier = Modifier.padding(Dimens.doubleSpace).piShadow()) {
-                        Column {
-                            /*VoteOptionRow("Vote Now (IN PROGRESS)") {
-
-                            }*/
-                            VoteOptionRow("Tamilglitz") {
-                                participantDetailViewModel.linkLauncher.openLink("https://tamilglitz.in/bigg-boss-tamil-vote/")
-                            }
-                        }
-                    }
                 }
 
-                participantItem.history?.let {history->
+                participantItem.history?.let { history ->
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
-                    Text("History", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(Dimens.doubleSpace))
+                    Text(
+                        "History",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.padding(Dimens.doubleSpace)
+                    )
 
-                   for (historyItem in history) {
-                       Surface (modifier = Modifier.padding(Dimens.doubleSpace).piShadow()) {
-                           HistoryRow(historyItem)
-                       }
-                   }
+                    for (historyItem in history) {
+                        Surface(modifier = Modifier.padding(Dimens.doubleSpace).piShadow()) {
+                            HistoryRow(historyItem)
+                        }
+                    }
 
                 }
 
@@ -139,15 +196,18 @@ class ParticipantDetailScreen (val query:String): Screen {
 
     @Composable
     fun HistoryRow(history: HistoryItem) {
-        Column (modifier = Modifier.fillMaxWidth().padding(Dimens.doubleSpace)) {
-            Text("Week ${history.week?.toString()?:"1"}")
+        Column(modifier = Modifier.fillMaxWidth().padding(Dimens.doubleSpace)) {
+            Text("Week ${history.week?.toString() ?: "1"}")
 
             history.notes?.let {
-                Row (modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
                     for (note in history.notes) {
-                        AssistChip (modifier = Modifier.padding(Dimens.space), onClick = {}, label = {
-                            Text(note)
-                        })
+                        AssistChip(
+                            modifier = Modifier.padding(Dimens.space),
+                            onClick = {},
+                            label = {
+                                Text(note)
+                            })
                     }
                 }
             }
@@ -155,10 +215,13 @@ class ParticipantDetailScreen (val query:String): Screen {
     }
 
     @Composable
-    fun VoteOptionRow(title:String, callback: ()->(Unit)) {
-        Row (horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth().clickable {
-            callback.invoke()
-        }.padding(Dimens.doubleSpace)) {
+    fun VoteOptionRow(title: String, callback: () -> (Unit)) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth().clickable {
+                callback.invoke()
+            }.padding(Dimens.doubleSpace)
+        ) {
             Text(title)
             Icon(imageVector = Icons.Default.ChevronRight, "Detail page")
         }

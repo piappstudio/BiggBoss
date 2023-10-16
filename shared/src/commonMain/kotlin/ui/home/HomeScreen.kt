@@ -65,7 +65,7 @@ class HomeScreen : Screen {
         }
         val state by homeScreenModel.homeScreenState.collectAsState()
         val currentNav = LocalNavigator.currentOrThrow
-
+        
         val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
         Scaffold(topBar = {
             MediumTopAppBar(title = {

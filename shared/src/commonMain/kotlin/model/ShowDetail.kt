@@ -3,6 +3,7 @@ package model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import ui.component.shared.PiSingleNotification
 
 
 @Serializable
@@ -11,7 +12,8 @@ data class ShowDetail(
 	@SerialName("voting_options")
 	val votingOption: VotingOption?=null,
 	@SerialName("participants")
-	val participants: List<ParticipantItem>? = null
+	val participants: List<ParticipantItem>? = null,
+	val notifications: List<PiSingleNotification>? = null
 )
 
 @Serializable

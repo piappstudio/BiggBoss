@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -42,10 +43,14 @@ class ShowDetailScreen(private val title: String, val url:String) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val detailModel = getScreenModel<ShowDetailModel>()
-        LaunchedEffect(url) {
-            detailModel.fetchShowDetails(url)
-        }
+
         val state by detailModel.showDetailState.collectAsState()
+        LaunchedEffect(url) {
+            if (state.data==null) {
+                detailModel.fetchShowDetails(url)
+            }
+
+        }
         Scaffold(topBar = {
             TopAppBar(title = {
                 Text(title)

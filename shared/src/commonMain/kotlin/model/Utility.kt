@@ -12,6 +12,9 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.until
 import ui.theme.Dimens
 
+object PiGlobalInfo {
+    var episodeDetail:ShowDetail?=null
+}
 fun String.toDate():Instant {
     return Instant.parse(this+"T00:00:00Z")
 }

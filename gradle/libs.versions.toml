@@ -17,8 +17,16 @@ kamel-image-version = "0.7.3"
 moko-viewmodel-version = "0.16.1"
 compose_version = "1.5.1"
 kotlinx-datetime-version = "0.4.1"
+kermit-version = "2.0.0"
+junit = "4.13.2"
+gson = "2.9.0"
 
 [libraries]
+
+#test
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+# Gson
+google-code-gson = {group = "com.google.code.gson", name = "gson", version.ref = "gson"}
 
 # Date time
 kotlinx-datetime = {group = "org.jetbrains.kotlinx",name = "kotlinx-datetime", version.ref = "kotlinx-datetime-version" }
@@ -29,7 +37,7 @@ compose-preview = {group = "org.jetbrains.compose.ui",name = "ui-tooling-preview
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 napier-log =  {group = "io.github.aakira", name = "napier", version.ref = "napierVersion"}
-
+kermit-log = {group="co.touchlab", name = "kermit", version.ref = "kermit-version"}
 # For coroutine
 kotlinx-coroutines-core = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutine-version"}
 

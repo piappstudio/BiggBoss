@@ -1,4 +1,5 @@
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.registry.screenModule
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.biggboss.shared.MR
 import dev.icerock.moko.resources.compose.*
 import di.BiggBossScreen
@@ -29,6 +31,7 @@ import ui.home.HomeScreen
 import ui.theme.BiggBossAppTheme
 
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun App() {
 

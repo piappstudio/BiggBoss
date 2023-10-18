@@ -86,7 +86,7 @@ class HomeScreen : Screen {
 
                     is HomeScreenState.Success -> {
                         RenderHomeScreen((state as HomeScreenState.Success).showList, onClick = {item->
-                            currentNav.push(ShowDetailScreen(title = item.title?:IConstant.EMPTY, url= item.moreInfo?:IConstant.EMPTY))
+                            currentNav.push(ShowDetailScreen(title = item.title?:IConstant.EMPTY, url= item.moreInfo?:IConstant.EMPTY, trendUrl = item.trends?:IConstant.EMPTY))
                         }) { youtube ->
                             youtube.url?.let {
                                 homeScreenModel.linkLauncher.openLink(youtube.url)
@@ -125,7 +125,6 @@ class HomeScreen : Screen {
                             Column (modifier = Modifier.padding(start = Dimens.space, end = Dimens.space), horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text("DAYS", style = MaterialTheme.typography.titleSmall)
                                 Text(item.startDate?.toDate()?.daysSoFar()?.toString()?:IConstant.EMPTY,style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
-
                             }
                         }
                     }

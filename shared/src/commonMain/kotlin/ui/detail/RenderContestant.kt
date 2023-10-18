@@ -34,7 +34,9 @@ import model.IConstant
 import model.ParticipantItem
 import model.ShowDetail
 import model.VotingOption
+import model.daysSoFar
 import model.piShadow
+import model.toDate
 import ui.detail.ShowDetailScreen
 import ui.participant.ParticipantDetailScreen
 import ui.theme.Dimens
@@ -46,7 +48,6 @@ fun renderSection(
     title: StringResource,
     lazyListScope: LazyListScope,
     lstNominated: List<ParticipantItem>,
-    showDetailScreen: ShowDetailScreen,
     data: ShowDetail
     ) {
         lazyListScope.item {
@@ -57,7 +58,7 @@ fun renderSection(
             )
             Spacer(modifier = Modifier.padding(bottom = Dimens.space))
         }
-        lazyListScope.items(lstNominated) { participant ->
+        lazyListScope.items(lstNominated.sortedByDescending { it.history?.lastOrNull()?.nominatedBy?.size  }) { participant ->
             RenderContestantRow(participant, data.votingOption?: VotingOption())
             Spacer(modifier = Modifier.height(Dimens.space))
         }
@@ -85,7 +86,7 @@ fun renderSection(
                             contentDescription = "Participant image"
                         )
                     }
-                    Column(modifier = Modifier.padding(start = Dimens.space)) {
+                    Column(modifier = Modifier.padding(start = Dimens.space).weight(1f)) {
                         Text(
                             participant.name ?: IConstant.EMPTY,
                             style = MaterialTheme.typography.titleMedium,
@@ -155,6 +156,13 @@ fun renderSection(
                         }
 
 
+                    }
+
+                    participant.history?.lastOrNull()?.nominatedBy?.let {
+                        Column (modifier = Modifier.padding(start = Dimens.space, end = Dimens.space), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("Votes", style = MaterialTheme.typography.titleSmall)
+                            Text(it.size.toString(),style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
+                        }
                     }
                 }
             }

@@ -13,6 +13,8 @@ object PiNetwork {
     object EndPoint {
         const val SHOWS = "json/shows.json"
         const val DETAIL = "json/shows/"
+        const val WEEKLY_REPORT = "json/shows/week/week.json"
+        const val TRENDS = "json/shows/"
     }
 }
 

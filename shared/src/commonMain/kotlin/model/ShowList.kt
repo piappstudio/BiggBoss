@@ -31,5 +31,8 @@ data class ShowItem(
 	val title: String? = null,
 
 	@SerialName("start_date")
-	val startDate: String? = null
+	val startDate: String? = null,
+
+	@SerialName("trends")
+	val trends:String? = null
 )

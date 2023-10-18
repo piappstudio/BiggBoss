@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import model.ShowDetail
 import model.ShowList
+import model.TrendItem
+import model.WeeklyInfo
 
 class PiRepository(private val httpClient: HttpClient) {
 
@@ -26,6 +28,12 @@ class PiRepository(private val httpClient: HttpClient) {
     suspend fun fetchDetail(showId: String): Flow<Resource<ShowDetail?>> {
         return makeSafeApiCall {
             val response = httpClient.get(showId).body<ShowDetail>()
+            Resource.success(response)
+        }
+    }
+    suspend fun fetchTrends(trendUrl: String): Flow<Resource<List<TrendItem>?>> {
+        return makeSafeApiCall {
+            val response = httpClient.get(trendUrl).body<List<TrendItem>?>()
             Resource.success(response)
         }
     }

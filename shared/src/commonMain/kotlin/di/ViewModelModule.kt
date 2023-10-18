@@ -30,7 +30,7 @@ val viewModel = module {
         HomeScreenModel(get(), get())
     }
     factory {
-        ShowDetailModel(get())
+        ShowDetailModel(get(), get())
     }
 
     factory {

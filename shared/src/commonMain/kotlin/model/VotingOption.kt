@@ -36,5 +36,8 @@ data class VotingOption(
 	val officialVote: List<OfficialVoteItem>? = null,
 
 	@SerialName("unofficial_voting")
-	val unofficialVoting: List<UnofficialVotingItem>? = null
+	val unofficialVoting: List<UnofficialVotingItem>? = null,
+	@SerialName("polls")
+	val polls:List<UnofficialVotingItem>? = null
+
 )

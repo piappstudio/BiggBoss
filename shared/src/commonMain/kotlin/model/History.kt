@@ -10,5 +10,8 @@ data class HistoryItem(
 	val week: Int? = null,
 
 	@SerialName("notes")
-	val notes: List<String>? = null
+	val notes: List<String>? = null,
+	@SerialName("nominates")
+	val nominations:List<Int>?= null,
+	val nominatedBy:List<ParticipantItem>? = null
 )

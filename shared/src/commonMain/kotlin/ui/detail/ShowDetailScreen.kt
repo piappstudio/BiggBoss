@@ -1,28 +1,37 @@
 package ui.detail
 
+import RenderNotification
+import RenderTrendingScreen
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.IconButton
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -30,13 +39,13 @@ import com.biggboss.shared.MR
 import dev.icerock.moko.resources.compose.stringResource
 import di.getScreenModel
 import model.ShowDetail
-import network.Resource
-import renderNotification
+import model.piShadow
 import renderSection
 import ui.component.PiProgressIndicator
+import ui.participant.RenderUnofficialVoting
 import ui.theme.Dimens
 
-class ShowDetailScreen(private val title: String, val url:String) : Screen {
+class ShowDetailScreen(private val title: String, val url:String, val trendUrl:String) : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -44,10 +53,11 @@ class ShowDetailScreen(private val title: String, val url:String) : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val detailModel = getScreenModel<ShowDetailModel>()
 
-        val state by detailModel.showDetailState.collectAsState()
+        val state by detailModel.episodeUiData.collectAsState()
         LaunchedEffect(url) {
-            if (state.data==null) {
+            if (state.showDetail==null) {
                 detailModel.fetchShowDetails(url)
+                detailModel.fetchTrends(trendUrl)
             }
 
         }
@@ -63,39 +73,69 @@ class ShowDetailScreen(private val title: String, val url:String) : Screen {
 
             })
         }) {
-            when (state.status) {
-                Resource.Status.LOADING -> {
-                    PiProgressIndicator()
+            RenderTabBar(modifier = Modifier.padding(it), detailViewModel = detailModel)
+        }
+    }
+
+
+
+
+    @Composable
+    fun RenderTabBar(modifier: Modifier, detailViewModel: ShowDetailModel) {
+        val episodeUiData by detailViewModel.episodeUiData.collectAsState()
+        val selectedTab = episodeUiData.selectedTab
+        val tabs = listOf("All", "Nominations", "Polls", "Trending", "Notification")
+        Column (modifier = modifier) {
+            ScrollableTabRow(
+                selectedTabIndex = selectedTab,
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
+                    )
                 }
-
-                Resource.Status.SUCCESS -> {
-                    RenderContestantList(state.data, modifier = Modifier.padding(it))
+            ) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        selected = index == selectedTab,
+                        onClick = {
+                            detailViewModel.selectTab(index)
+                        },
+                        text = { Text(text = title) }
+                    )
                 }
+            }
 
-                Resource.Status.ERROR -> {
+            if (episodeUiData.inProgress) {
+                PiProgressIndicator()
+            }
 
+            // Content for each tab
+            when (selectedTab) {
+                0 -> {
+                    RenderContestantList(episodeUiData.showDetail, modifier = Modifier)
                 }
-
-                else -> {
-
+                1 -> {
+                    RenderNominationScreen(episodeUiData.showDetail, modifier = Modifier)
+                }
+                2 -> {
+                    episodeUiData.showDetail?.votingOption?.let {votingOption->
+                        RenderUnofficialVoting(votingOption, detailViewModel.linkLauncher)
+                    }
+                }
+                3 -> {
+                    RenderTrendingScreen(episodeUiData.trend, detailViewModel.linkLauncher)
+                }
+                4 -> {
+                    RenderNotification(MR.strings.title_notification, episodeUiData.showDetail?.notifications)
                 }
             }
         }
     }
 
-    @Composable
-    fun EmptyPlaceholder(title: String, modifier: Modifier) {
-        Card(modifier = modifier.padding(Dimens.doubleSpace).fillMaxWidth()) {
-            Icon(imageVector = Icons.Default.Error, contentDescription = title)
-            Spacer(modifier = Modifier.height(Dimens.space))
-            Text(title, style = MaterialTheme.typography.bodyLarge)
-
-        }
-    }
 
     @Composable
     fun RenderContestantList(data: ShowDetail?, modifier: Modifier) {
-        LazyColumn(modifier = modifier.fillMaxSize().padding(Dimens.doubleSpace)) {
+        LazyColumn(modifier = modifier.fillMaxWidth().padding(Dimens.doubleSpace)) {
             if (data?.participants == null) {
                 item {
                     EmptyPlaceholder(
@@ -104,40 +144,41 @@ class ShowDetailScreen(private val title: String, val url:String) : Screen {
                     )
                 }
             } else {
-
-                data.notifications?.let {
-                    renderNotification(MR.strings.title_notification, this, data.notifications)
-                }
-
                 val lstCaptain = data.participants.filter { it.isCaptain == true }
                 if (lstCaptain.isNotEmpty()) {
-                    renderSection( MR.strings.title_captain,this, lstCaptain, this@ShowDetailScreen, data)
+                    renderSection( MR.strings.title_captain,this, lstCaptain, data)
                 }
 
                 val lstNominated = data.participants.filter { it.isNominated == true }
 
                 if (lstNominated.isNotEmpty()) {
-                    renderSection( MR.strings.title_nomination,this, lstNominated, this@ShowDetailScreen, data)
+                    renderSection( MR.strings.title_nomination,this, lstNominated, data)
                 }
 
                 val lstEliminated = data.participants.filter { it.eliminatedDate?.isNotEmpty() == true }
                 if (lstEliminated.isNotEmpty()) {
-                    renderSection(MR.strings.title_eliminated, this, lstEliminated, this@ShowDetailScreen, data)
+                    renderSection(MR.strings.title_eliminated, this, lstEliminated,  data)
                 }
 
                 val lstOthers =
                     data.participants.filter { it.isNominated != true && it.isCaptain != true && it.eliminatedDate.isNullOrEmpty() }
                 if (lstOthers.isNotEmpty()) {
-                    renderSection( MR.strings.title_others,this, lstOthers, this@ShowDetailScreen, data)
+                    renderSection( MR.strings.title_others,this, lstOthers, data)
                 }
             }
 
         }
     }
-
-
-
-
 }
 
+@Composable
+fun EmptyPlaceholder(title: String, modifier: Modifier) {
+    Surface (modifier = modifier.fillMaxSize().padding(Dimens.doubleSpace).piShadow()) {
+        Column (modifier = Modifier.padding(Dimens.doubleSpace), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            Icon(imageVector = Icons.Default.Error, contentDescription = title)
+            Spacer(modifier = Modifier.height(Dimens.space))
+            Text(title, style = MaterialTheme.typography.headlineSmall)
+        }
+    }
+}
 

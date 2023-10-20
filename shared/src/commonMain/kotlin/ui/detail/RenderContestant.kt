@@ -1,3 +1,5 @@
+import analytics.AnalyticConstant
+import analytics.AnalyticLogger
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -48,7 +50,8 @@ fun renderSection(
     title: StringResource,
     lazyListScope: LazyListScope,
     lstNominated: List<ParticipantItem>,
-    data: ShowDetail
+    data: ShowDetail,
+    analyticLogger: AnalyticLogger
     ) {
         lazyListScope.item {
             Text(
@@ -59,18 +62,19 @@ fun renderSection(
             Spacer(modifier = Modifier.padding(bottom = Dimens.space))
         }
         lazyListScope.items(lstNominated.sortedByDescending { it.history?.lastOrNull()?.nominatedBy?.size  }) { participant ->
-            RenderContestantRow(participant, data.votingOption?: VotingOption())
+            RenderContestantRow(participant, data.votingOption?: VotingOption(), analyticLogger = analyticLogger)
             Spacer(modifier = Modifier.height(Dimens.space))
         }
     }
 
     @Composable
-    fun RenderContestantRow(participant: ParticipantItem, votingOption: VotingOption) {
+    fun RenderContestantRow(participant: ParticipantItem, votingOption: VotingOption, analyticLogger: AnalyticLogger) {
         val navigator = LocalNavigator.currentOrThrow
         Surface  (modifier = Modifier.piShadow().clickable {
             val json = Json { ignoreUnknownKeys = true }
             val jsonParticipantItem = json.encodeToString(participant)
             val jsonVotingOption = json.encodeToString(votingOption)
+            analyticLogger.logEvent(AnalyticConstant.Event.CLICKED, mapOf(Pair(AnalyticConstant.Params.PARTICIPANT_NAME, participant.name?:IConstant.EMPTY)))
             navigator.push(ParticipantDetailScreen(jsonParticipantItem, jsonVotingOption))
         }) {
             Column {

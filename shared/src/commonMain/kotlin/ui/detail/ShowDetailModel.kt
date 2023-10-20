@@ -1,5 +1,6 @@
 package ui.detail
 
+import analytics.AnalyticLogger
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import co.touchlab.kermit.Logger
@@ -32,7 +33,7 @@ data class EpisodeUiData(
 )
 
 
-class ShowDetailModel(private val piRepository: PiRepository, val linkLauncher: LinkLauncher) :
+class ShowDetailModel(private val piRepository: PiRepository, val linkLauncher: LinkLauncher, val analyticLogger: AnalyticLogger) :
     ScreenModel {
 
     private val _episodeUiState: MutableStateFlow<EpisodeUiData> = MutableStateFlow(EpisodeUiData())

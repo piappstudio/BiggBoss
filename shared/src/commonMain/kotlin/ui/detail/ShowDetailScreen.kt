@@ -2,6 +2,8 @@ package ui.detail
 
 import RenderNotification
 import RenderTrendingScreen
+import analytics.AnalyticConstant
+import analytics.AnalyticLogger
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -112,21 +115,51 @@ class ShowDetailScreen(private val title: String, val url:String, val trendUrl:S
             // Content for each tab
             when (selectedTab) {
                 0 -> {
-                    RenderContestantList(episodeUiData.showDetail, modifier = Modifier)
+                    LaunchedEffect(Unit) {
+                        detailViewModel.analyticLogger.logEvent(AnalyticConstant.Event.SCREEN_VIEW, mapOf(
+                            Pair(AnalyticConstant.Params.SCREEN_NAME, AnalyticConstant.Screen.ALL)
+                        ))
+                    }
+
+                    RenderContestantList(episodeUiData.showDetail, modifier = Modifier, detailViewModel.analyticLogger)
                 }
                 1 -> {
-                    RenderNominationScreen(episodeUiData.showDetail, modifier = Modifier)
+                    LaunchedEffect(Unit)  {
+                        detailViewModel.analyticLogger.logEvent(AnalyticConstant.Event.SCREEN_VIEW, mapOf(
+                            Pair(AnalyticConstant.Params.SCREEN_NAME, AnalyticConstant.Screen.NOMINATIONS)
+                        ))
+                    }
+
+                    RenderNominationScreen(episodeUiData.showDetail, modifier = Modifier, detailViewModel.analyticLogger)
                 }
                 2 -> {
+                    LaunchedEffect(Unit)  {
+                        detailViewModel.analyticLogger.logEvent(AnalyticConstant.Event.SCREEN_VIEW, mapOf(
+                            Pair(AnalyticConstant.Params.SCREEN_NAME, AnalyticConstant.Screen.VOTING)
+                        ))
+                    }
+
                     episodeUiData.showDetail?.votingOption?.let {votingOption->
-                        RenderUnofficialVoting(votingOption, detailViewModel.linkLauncher)
+                        RenderUnofficialVoting(votingOption, detailViewModel.linkLauncher, detailViewModel.analyticLogger)
                     }
                 }
                 3 -> {
-                    RenderTrendingScreen(episodeUiData.trend, detailViewModel.linkLauncher)
+                    LaunchedEffect(Unit)  {
+                        detailViewModel.analyticLogger.logEvent(AnalyticConstant.Event.SCREEN_VIEW, mapOf(
+                            Pair(AnalyticConstant.Params.SCREEN_NAME, AnalyticConstant.Screen.TRENDING)
+                        ))
+                    }
+
+                    RenderTrendingScreen(episodeUiData.trend, detailViewModel.linkLauncher, detailViewModel.analyticLogger)
                 }
                 4 -> {
-                    RenderNotification(MR.strings.title_notification, episodeUiData.showDetail?.notifications)
+                    LaunchedEffect(Unit) {
+                        detailViewModel.analyticLogger.logEvent(AnalyticConstant.Event.SCREEN_VIEW, mapOf(
+                            Pair(AnalyticConstant.Params.SCREEN_NAME, AnalyticConstant.Screen.NOTIFICATIONS)
+                        ))
+                    }
+
+                    RenderNotification(MR.strings.title_notification, episodeUiData.showDetail?.notifications, detailViewModel.analyticLogger)
                 }
             }
         }
@@ -134,7 +167,7 @@ class ShowDetailScreen(private val title: String, val url:String, val trendUrl:S
 
 
     @Composable
-    fun RenderContestantList(data: ShowDetail?, modifier: Modifier) {
+    fun RenderContestantList(data: ShowDetail?, modifier: Modifier, analyticLogger: AnalyticLogger) {
         LazyColumn(modifier = modifier.fillMaxWidth().padding(Dimens.doubleSpace)) {
             if (data?.participants == null) {
                 item {
@@ -146,24 +179,24 @@ class ShowDetailScreen(private val title: String, val url:String, val trendUrl:S
             } else {
                 val lstCaptain = data.participants.filter { it.isCaptain == true }
                 if (lstCaptain.isNotEmpty()) {
-                    renderSection( MR.strings.title_captain,this, lstCaptain, data)
+                    renderSection( MR.strings.title_captain,this, lstCaptain, data, analyticLogger)
                 }
 
                 val lstNominated = data.participants.filter { it.isNominated == true }
 
                 if (lstNominated.isNotEmpty()) {
-                    renderSection( MR.strings.title_nomination,this, lstNominated, data)
+                    renderSection( MR.strings.title_nomination,this, lstNominated, data, analyticLogger)
                 }
 
                 val lstEliminated = data.participants.filter { it.eliminatedDate?.isNotEmpty() == true }
                 if (lstEliminated.isNotEmpty()) {
-                    renderSection(MR.strings.title_eliminated, this, lstEliminated,  data)
+                    renderSection(MR.strings.title_eliminated, this, lstEliminated,  data, analyticLogger)
                 }
 
                 val lstOthers =
                     data.participants.filter { it.isNominated != true && it.isCaptain != true && it.eliminatedDate.isNullOrEmpty() }
                 if (lstOthers.isNotEmpty()) {
-                    renderSection( MR.strings.title_others,this, lstOthers, data)
+                    renderSection( MR.strings.title_others,this, lstOthers, data, analyticLogger)
                 }
             }
 

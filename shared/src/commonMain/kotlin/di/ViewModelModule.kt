@@ -1,5 +1,6 @@
 package di
 
+import analytics.AnalyticLogger
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -26,15 +27,18 @@ val viewModel = module {
     single {
         LinkLauncher()
     }
-    factory {
-        HomeScreenModel(get(), get())
+    single {
+        AnalyticLogger()
     }
     factory {
-        ShowDetailModel(get(), get())
+        HomeScreenModel(get(), get(), get())
+    }
+    factory {
+        ShowDetailModel(get(), get(),get())
     }
 
     factory {
-        ParticipantDetailViewModel(get(), get())
+        ParticipantDetailViewModel(get(), get(), get())
     }
 
 }

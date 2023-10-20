@@ -1,6 +1,6 @@
 package ui.home
 
-import androidx.compose.foundation.border
+import analytics.AnalyticConstant
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,12 +13,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -86,9 +82,16 @@ class HomeScreen : Screen {
 
                     is HomeScreenState.Success -> {
                         RenderHomeScreen((state as HomeScreenState.Success).showList, onClick = {item->
+                            // item clicked event
+                            homeScreenModel.analyticLogger.logEvent(AnalyticConstant.Event.CLICKED, mapOf(
+                                Pair(AnalyticConstant.Params.ACTION_NAME, item.title?:IConstant.EMPTY)
+                            ) )
                             currentNav.push(ShowDetailScreen(title = item.title?:IConstant.EMPTY, url= item.moreInfo?:IConstant.EMPTY, trendUrl = item.trends?:IConstant.EMPTY))
                         }) { youtube ->
                             youtube.url?.let {
+                                homeScreenModel.analyticLogger.logEvent(AnalyticConstant.Event.YOUTUBE, mapOf(
+                                    Pair(AnalyticConstant.Params.URL, youtube.url)
+                                ) )
                                 homeScreenModel.linkLauncher.openLink(youtube.url)
                             }
 

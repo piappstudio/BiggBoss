@@ -1,5 +1,7 @@
 package ui.participant
 
+import analytics.AnalyticConstant
+import analytics.AnalyticLogger
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +32,8 @@ import ui.theme.Dimens
 fun RenderVotingOption(
     votingOption: VotingOption,
     participantItem: ParticipantItem,
-    linkLauncher: LinkLauncher
+    linkLauncher: LinkLauncher,
+    analyticLogger: AnalyticLogger
 ) {
     // Official vote option
     votingOption.officialVote?.let { lstOptions ->
@@ -58,6 +61,7 @@ fun RenderVotingOption(
                         when (voteItem.type) {
                             LinkType.URL -> {
                                 voteItem.link?.let { link ->
+                                    analyticLogger.logEvent(AnalyticConstant.Event.CLICKED, params = mapOf(Pair(AnalyticConstant.Params.URL,link)))
                                     linkLauncher.openLink(
                                         link
                                     )
@@ -66,6 +70,8 @@ fun RenderVotingOption(
 
                             LinkType.DIAL -> {
                                 voteItem.link?.let { link ->
+                                    analyticLogger.logEvent(AnalyticConstant.Event.CLICKED, params = mapOf(Pair(AnalyticConstant.Params.URL,link)))
+
                                     linkLauncher.dialNumber(
                                         link
                                     )
@@ -79,7 +85,7 @@ fun RenderVotingOption(
         }
     }
 
-    RenderUnofficialVoting(votingOption, linkLauncher)
+    RenderUnofficialVoting(votingOption, linkLauncher, analyticLogger)
 
 }
 
@@ -100,7 +106,8 @@ fun VoteOptionRow(title: String, callback: () -> (Unit)) {
 @Composable
 fun RenderUnofficialVoting(
     votingOption: VotingOption,
-    linkLauncher: LinkLauncher
+    linkLauncher: LinkLauncher,
+    analyticLogger: AnalyticLogger
 ) {
     // Unofficial vote option
     votingOption.unofficialVoting?.let { lstUnOfficaOption ->
@@ -114,6 +121,7 @@ fun RenderUnofficialVoting(
             Column {
                 lstUnOfficaOption.forEach { unOfficialOption ->
                     VoteOptionRow(unOfficialOption.name ?: IConstant.EMPTY) {
+                        analyticLogger.logEvent(AnalyticConstant.Event.CLICKED, params = mapOf(Pair(AnalyticConstant.Params.URL, unOfficialOption.link?:IConstant.EMPTY)))
                         linkLauncher.openLink(
                             unOfficialOption.link ?: IConstant.EMPTY
                         )
@@ -134,6 +142,7 @@ fun RenderUnofficialVoting(
             Column {
                 lstUnOfficaOption.forEach { unOfficialOption ->
                     VoteOptionRow(unOfficialOption.name ?: IConstant.EMPTY) {
+                        analyticLogger.logEvent(AnalyticConstant.Event.CLICKED, params = mapOf(Pair(AnalyticConstant.Params.URL, unOfficialOption.link?:IConstant.EMPTY)))
                         linkLauncher.openLink(
                             unOfficialOption.link ?: IConstant.EMPTY
                         )

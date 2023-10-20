@@ -1,3 +1,4 @@
+import analytics.AnalyticLogger
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -16,7 +17,7 @@ import ui.theme.Dimens
 @Composable
 fun RenderNotification(
     title: StringResource,
-    notifications: List<PiSingleNotification>?) {
+    notifications: List<PiSingleNotification>?, analyticLogger: AnalyticLogger) {
     Column (modifier = Modifier.padding(Dimens.doubleSpace)){
         Text(
             stringResource(title),

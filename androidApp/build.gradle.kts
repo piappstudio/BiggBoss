@@ -33,7 +33,7 @@ android {
         applicationId = "com.piappstudio.biggboss"
         minSdk = (findProperty("android.minSdk") as String).toInt()
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
-        versionCode = 5
+        versionCode = 6
         versionName = "1.0"
     }
     compileOptions {

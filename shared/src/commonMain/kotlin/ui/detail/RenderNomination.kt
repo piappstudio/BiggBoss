@@ -1,5 +1,6 @@
 package ui.detail
 
+import analytics.AnalyticLogger
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,7 +14,7 @@ import ui.component.shared.SingleNotification
 import ui.theme.Dimens
 
 @Composable
-fun RenderNominationScreen(data: ShowDetail?, modifier: Modifier) {
+fun RenderNominationScreen(data: ShowDetail?, modifier: Modifier, analyticLogger: AnalyticLogger) {
     LazyColumn(modifier = modifier.fillMaxWidth().padding(Dimens.doubleSpace)) {
         val lstNominated = data?.participants?.filter { it.isNominated == true }
         if (lstNominated.isNullOrEmpty()) {
@@ -21,7 +22,7 @@ fun RenderNominationScreen(data: ShowDetail?, modifier: Modifier) {
                 SingleNotification(modifier = Modifier.padding(Dimens.doubleSpace), PiSingleNotification("Nomination is in progress!", "Nomination process is yet to be completed. Please wait, we will update the list as soon as possible"))
             }
         } else {
-            renderSection( MR.strings.title_nomination,this, lstNominated, data)
+            renderSection( MR.strings.title_nomination,this, lstNominated, data, analyticLogger)
         }
 
     }

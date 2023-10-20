@@ -1,5 +1,6 @@
 package ui.participant
 
+import analytics.AnalyticLogger
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -98,7 +99,7 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
 
                 if (participantItem.isNominated == true) {
 
-                    RenderVotingOption(votingOption, participantItem, participantDetailViewModel.linkLauncher)
+                    RenderVotingOption(votingOption, participantItem, participantDetailViewModel.linkLauncher, analyticLogger = participantDetailViewModel.analyticLogger)
 
                 }
 

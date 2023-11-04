@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
 import model.HistoryItem
 import model.ParticipantItem
 import model.PiGlobalInfo
@@ -17,6 +18,7 @@ import model.ShowDetail
 import model.Trend
 import model.TrendItem
 import model.WeeklyInfo
+import model.toDate
 import network.PIError
 import network.PiRepository
 import network.Resource
@@ -29,8 +31,7 @@ data class EpisodeUiData(
     val inProgress: Boolean = false,
     val error: PIError? = null,
     val weeklyInfo: WeeklyInfo? = null,
-    val trend: List<TrendItem>? = null
-)
+    val trend: List<TrendItem>? = null)
 
 
 class ShowDetailModel(private val piRepository: PiRepository, val linkLauncher: LinkLauncher, val analyticLogger: AnalyticLogger) :
@@ -39,7 +40,7 @@ class ShowDetailModel(private val piRepository: PiRepository, val linkLauncher: 
     private val _episodeUiState: MutableStateFlow<EpisodeUiData> = MutableStateFlow(EpisodeUiData())
     val episodeUiData = _episodeUiState.asStateFlow()
 
-    fun fetchShowDetails(showId: String) {
+    fun fetchShowDetails(showId: String, startDate:String) {
         coroutineScope.launch(Dispatchers.IO) {
             piRepository.fetchDetail(showId).collect { result ->
                 when (result.status) {
@@ -54,7 +55,7 @@ class ShowDetailModel(private val piRepository: PiRepository, val linkLauncher: 
                     Resource.Status.SUCCESS -> {
                         _episodeUiState.update {
                             it.copy(
-                                showDetail = result.data,
+                                showDetail = result.data?.copy(startDate = startDate),
                                 inProgress = false
                             )
                         }
@@ -169,6 +170,8 @@ class ShowDetailModel(private val piRepository: PiRepository, val linkLauncher: 
 
 
         }
+
+
     }
 
 }

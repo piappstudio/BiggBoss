@@ -22,7 +22,8 @@ fun RenderNominationScreen(data: ShowDetail?, modifier: Modifier, analyticLogger
                 SingleNotification(modifier = Modifier.padding(Dimens.doubleSpace), PiSingleNotification("Nomination is in progress!", "Nomination process is yet to be completed. Please wait, we will update the list as soon as possible"))
             }
         } else {
-            renderSection( MR.strings.title_nomination,this, lstNominated, data, analyticLogger)
+           val sortedNominatedItems = lstNominated.sortedByDescending { it.history?.lastOrNull()?.nominatedBy?.size  }
+            renderSection( MR.strings.title_nomination,this, sortedNominatedItems, data, analyticLogger)
         }
 
     }

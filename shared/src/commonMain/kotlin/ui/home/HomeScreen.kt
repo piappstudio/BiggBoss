@@ -86,7 +86,7 @@ class HomeScreen : Screen {
                             homeScreenModel.analyticLogger.logEvent(AnalyticConstant.Event.CLICKED, mapOf(
                                 Pair(AnalyticConstant.Params.ACTION_NAME, item.title?:IConstant.EMPTY)
                             ) )
-                            currentNav.push(ShowDetailScreen(title = item.title?:IConstant.EMPTY, url= item.moreInfo?:IConstant.EMPTY, trendUrl = item.trends?:IConstant.EMPTY))
+                            currentNav.push(ShowDetailScreen(title = item.title?:IConstant.EMPTY, url= item.moreInfo?:IConstant.EMPTY, trendUrl = item.trends?:IConstant.EMPTY, startDate = item.startDate?:IConstant.EMPTY))
                         }) { youtube ->
                             youtube.url?.let {
                                 homeScreenModel.analyticLogger.logEvent(AnalyticConstant.Event.YOUTUBE, mapOf(

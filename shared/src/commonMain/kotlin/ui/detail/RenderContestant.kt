@@ -30,6 +30,7 @@ import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import kotlinx.datetime.Instant
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import model.IConstant
@@ -39,6 +40,7 @@ import model.VotingOption
 import model.daysSoFar
 import model.piShadow
 import model.toDate
+import ui.component.shared.RenderDayScreen
 import ui.detail.ShowDetailScreen
 import ui.participant.ParticipantDetailScreen
 import ui.theme.Dimens
@@ -61,14 +63,14 @@ fun renderSection(
             )
             Spacer(modifier = Modifier.padding(bottom = Dimens.space))
         }
-        lazyListScope.items(lstNominated.sortedByDescending { it.history?.lastOrNull()?.nominatedBy?.size  }) { participant ->
-            RenderContestantRow(participant, data.votingOption?: VotingOption(), analyticLogger = analyticLogger)
+        lazyListScope.items(lstNominated) { participant ->
+            RenderContestantRow(showDetail = data, participant, data.votingOption?: VotingOption(), analyticLogger = analyticLogger)
             Spacer(modifier = Modifier.height(Dimens.space))
         }
     }
 
     @Composable
-    fun RenderContestantRow(participant: ParticipantItem, votingOption: VotingOption, analyticLogger: AnalyticLogger) {
+    fun RenderContestantRow(showDetail: ShowDetail, participant: ParticipantItem, votingOption: VotingOption, analyticLogger: AnalyticLogger) {
         val navigator = LocalNavigator.currentOrThrow
         Surface  (modifier = Modifier.piShadow().clickable {
             val json = Json { ignoreUnknownKeys = true }
@@ -162,11 +164,15 @@ fun renderSection(
 
                     }
 
-                    participant.history?.lastOrNull()?.nominatedBy?.let {
-                        Column (modifier = Modifier.padding(start = Dimens.space, end = Dimens.space), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Votes", style = MaterialTheme.typography.titleSmall)
-                            Text(it.size.toString(),style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
+                    if(participant.eliminatedDate?.isNotBlank() == true) {
+                        participant.eliminatedDate.toDate()?.let {endDate->
+                            RenderDayScreen("Days", showDetail.startDate?.toDate()?.daysSoFar(endDate).toString())
                         }
+                    }
+
+                    participant.history?.lastOrNull()?.nominatedBy?.let {
+
+                        RenderDayScreen("Votes", it.size.toString())
                     }
                 }
             }

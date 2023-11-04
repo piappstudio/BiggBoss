@@ -7,6 +7,7 @@ object AnalyticConstant {
         const val PARTICIPANT_DETAIL = "PARTICIPANT_DETAIL"
         const val VOTING = "VOTING"
         const val TRENDING = "TRENDING"
+        const val ELIMINATED = "ELIMINATED"
 
         const val ALL = "ALL"
         const val NOMINATIONS = "NOMINATIONS"

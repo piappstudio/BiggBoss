@@ -2,6 +2,7 @@ package ui.participant
 
 import analytics.AnalyticLogger
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,13 +42,17 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import di.getScreenModel
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import model.HistoryItem
 import model.IConstant
 import model.ParticipantItem
 import model.PiGlobalInfo
 import model.VotingOption
+import model.daysSoFar
 import model.piShadow
+import model.toDate
+import ui.component.shared.RenderDayScreen
 import ui.theme.Dimens
 
 class ParticipantDetailScreen(private val query: String, private val strVotingOption: String) :
@@ -96,11 +101,27 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.ExtraBold
                 )
+                Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(end = Dimens.space), horizontalArrangement = Arrangement.SpaceBetween) {
+                    val startDate = participantItem.startDate?:PiGlobalInfo.episodeDetail?.startDate
+                    startDate?.let {
+                        Text(
+                            "Start Date: $startDate",
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(Dimens.doubleSpace)
+                        )
+
+                        val endDate = participantItem.eliminatedDate?.toDate()?:Clock.System.now()
+
+                        RenderDayScreen("Days", startDate.toDate()?.daysSoFar(endDate).toString())
+
+
+                    }
+
+                }
+
 
                 if (participantItem.isNominated == true) {
-
                     RenderVotingOption(votingOption, participantItem, participantDetailViewModel.linkLauncher, analyticLogger = participantDetailViewModel.analyticLogger)
-
                 }
 
                 participantItem.history?.let { history ->

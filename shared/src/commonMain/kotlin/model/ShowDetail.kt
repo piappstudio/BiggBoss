@@ -1,5 +1,6 @@
 package model
 
+import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -14,15 +15,19 @@ data class ShowDetail(
 	val votingOption: VotingOption?=null,
 	@SerialName("participants")
 	val participants: List<ParticipantItem>? = null,
-	val notifications: List<PiSingleNotification>? = null
-)
+	val notifications: List<PiSingleNotification>? = null,
+
+	val startDate: String?=null
+
+	)
 
 @Serializable
 data class ParticipantItem(
 
 	@SerialName("image")
 	val image: String? = null,
-
+	@SerialName("start_date")
+	val startDate:String? = null,
 	@SerialName("eliminated_date")
 	val eliminatedDate: String? = null,
 

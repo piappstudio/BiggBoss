@@ -15,13 +15,23 @@ import ui.theme.Dimens
 object PiGlobalInfo {
     var episodeDetail:ShowDetail?=null
 }
-fun String.toDate():Instant {
-    return Instant.parse(this+"T00:00:00Z")
+fun String.toDate():Instant? {
+    return try {
+        Instant.parse(this+"T00:00:00Z")
+    }catch (ex:Exception) {
+        null
+    }
+
 }
 
 fun Instant.daysSoFar(): Long {
     return this.until(Clock.System.now(), DateTimeUnit.DAY, TimeZone.UTC)
 }
+
+fun Instant.daysSoFar(endDate:Instant): Long {
+    return this.until(endDate, DateTimeUnit.DAY, TimeZone.UTC)
+}
+
 
 fun Modifier.piShadow(elevation: Dp = Dimens.space): Modifier = composed {
     shadow(elevation = elevation, shape = RoundedCornerShape(elevation), clip = true)

@@ -165,8 +165,9 @@ fun renderSection(
                     }
 
                     if(participant.eliminatedDate?.isNotBlank() == true) {
+                        val startDate = participant.startDate?:showDetail.startDate
                         participant.eliminatedDate.toDate()?.let {endDate->
-                            RenderDayScreen("Days", showDetail.startDate?.toDate()?.daysSoFar(endDate).toString())
+                            RenderDayScreen("Days", startDate?.toDate()?.daysSoFar(endDate).toString())
                         }
                     }
 

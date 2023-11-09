@@ -78,6 +78,7 @@ class HomeScreen : Screen {
                     }
 
                     is HomeScreenState.Error -> {
+
                     }
 
                     is HomeScreenState.Success -> {

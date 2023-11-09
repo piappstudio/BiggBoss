@@ -21,6 +21,7 @@ kermit-version = "2.0.0"
 junit = "4.13.2"
 gson = "2.9.0"
 firebase-version = "32.3.1"
+chart-version = "Beta-0.0.5"
 [libraries]
 
 # Fireabse bom
@@ -81,6 +82,8 @@ serialization-json = {group = "org.jetbrains.kotlinx", name = "kotlinx-serializa
 #Asyn image loading
 kamel-image = {group = "media.kamel", name = "kamel-image", version.ref = "kamel-image-version"}
 
+# Chart
+chart = {group = "io.github.thechance101", name = "chart", version.ref = "chart-version"}
 # Fireabse
 
 [bundles]

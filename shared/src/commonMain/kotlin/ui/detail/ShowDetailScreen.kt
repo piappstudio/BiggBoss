@@ -40,10 +40,12 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.biggboss.shared.MR
 import dev.icerock.moko.resources.compose.stringResource
 import di.getScreenModel
+import model.IConstant
 import model.ShowDetail
 import model.piShadow
 import model.toDate
 import renderSection
+import ui.chart.ChartScreen
 import ui.component.PiProgressIndicator
 import ui.participant.RenderUnofficialVoting
 import ui.theme.Dimens
@@ -76,7 +78,7 @@ class ShowDetailScreen(private val title: String, val url:String, val trendUrl:S
 
             }, actions = {
                 IconButton(onClick = {
-
+                    navigator.push(ChartScreen(title = title, url= url, trendUrl = trendUrl, startDate = startDate))
                 }) {
                     Icon(imageVector = Icons.Default.ShowChart, contentDescription = "Display Charts" )
                 }

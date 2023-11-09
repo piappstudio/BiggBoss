@@ -34,7 +34,7 @@ data class EpisodeUiData(
     val trend: List<TrendItem>? = null)
 
 
-class ShowDetailModel(private val piRepository: PiRepository, val linkLauncher: LinkLauncher, val analyticLogger: AnalyticLogger) :
+open class ShowDetailModel(private val piRepository: PiRepository, val linkLauncher: LinkLauncher, val analyticLogger: AnalyticLogger) :
     ScreenModel {
 
     private val _episodeUiState: MutableStateFlow<EpisodeUiData> = MutableStateFlow(EpisodeUiData())

@@ -70,3 +70,8 @@ val evicted = Color(0xFFEA4839)
 val nominated = Color(0xFFFCBC1F)
 val yellowCard = Color(0xFFEFC935)
 val smallBossHouse = Color(0xFF4A7AEE)
+
+object PiColor {
+    val nominatedTo = Color(0xFF)
+    val nominatedBy = Color(0xFF)
+}

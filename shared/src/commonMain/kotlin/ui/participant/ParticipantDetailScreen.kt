@@ -142,6 +142,19 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
                     )
                 }
 
+                participantItem.history?.let {
+                    Spacer(modifier = Modifier.height(Dimens.doubleSpace))
+                    Text(
+                        "Performance",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.padding(Dimens.doubleSpace)
+                    )
+
+                    Spacer(modifier = Modifier.padding(Dimens.space))
+                    RenderPerformanceGraph(participantItem)
+                }
+
                 participantItem.history?.let { history ->
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
                     Text(
@@ -172,6 +185,7 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
 
         }
     }
+
 
 
     @Composable

@@ -1,7 +1,6 @@
 package ui.chart
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,8 +33,9 @@ import com.aay.compose.barChart.model.BarParameters
 import com.biggboss.shared.MR
 import dev.icerock.moko.resources.compose.stringResource
 import di.getScreenModel
+import model.ParticipantItem
+import model.generateRandomColorExcludingWhite
 import ui.theme.Dimens
-import ui.theme.smallBossHouse
 
 class ChartScreen(
     private val title: String,
@@ -95,9 +95,8 @@ class ChartScreen(
                     }
 
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
-
                     val nominated = stringResource(MR.strings.title_nominated)
-                    RenderTitle("Weekly Nomination Trending")
+                    RenderTitle("Most number of nominations")
                     state.showDetail?.participants?.let { lstParticipants ->
                         val allParticipantItem = lstParticipants.associate { participantItem ->
                             (participantItem.name?.subSequence(0, 4).toString()) to
@@ -114,10 +113,11 @@ class ChartScreen(
                         val yAxisData = sortedEmployeeMap.values.toList()
                         RenderBarChart(nominated, yAxisData, xAxisData, ui.theme.nominated)
                     }
-
+                    // Week wise nominations
+                    Spacer(modifier = Modifier.height(Dimens.doubleSpace))
+                    RenderWeeklyWiseVotingChart(state.showDetail?.participants)
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
                     // Captain
-
                     val captain = stringResource(MR.strings.title_captain)
                     RenderTitle("Weekly Captain Trending")
                     state.showDetail?.participants?.let { lstParticipants ->
@@ -146,7 +146,71 @@ class ChartScreen(
 
 
     @Composable
-    fun RenderBarChart(title: String, yAxisData: List<Double>, xAxisData: List<String>, color: Color) {
+    fun RenderWeeklyWiseVotingChart(participants: List<ParticipantItem>?) {
+        participants?.let { lstParticipants ->
+            val nominated = stringResource(MR.strings.title_nominated)
+            RenderTitle("Weekly nomination votes")
+            val lstBarParameter = mutableListOf<BarParameters>()
+            val lstWeeks =
+                lstParticipants.flatMap { it.history ?: emptyList() }.mapNotNull { it.week }
+                    .distinct()
+            lstParticipants.forEach { participant ->
+                val lstVotes = mutableListOf<Double>()
+                for (week in lstWeeks) {
+                    val currentWeek = participant.history?.firstOrNull { it.week == week  && it.notes?.contains(nominated) == true}
+                    if (currentWeek != null) {
+                        lstVotes.add(currentWeek.nominatedBy?.size?.toDouble()?:0.0)
+                    } else {
+                        lstVotes.add(0.0)
+                    }
+                }
+
+                lstBarParameter.add(
+                    BarParameters(
+                        participant.name ?: "",
+                        data = lstVotes,
+                        generateRandomColorExcludingWhite()
+                    )
+                )
+            }
+
+            Box(Modifier.fillMaxWidth().height(400.dp)) {
+                BarChart(
+                    chartParameters = lstBarParameter,
+                    gridColor = Color.DarkGray,
+                    xAxisData = lstWeeks.map { "Week: ${it}" },
+                    isShowGrid = true,
+                    animateChart = true,
+                    showGridWithSpacer = true,
+                    yAxisStyle = TextStyle(
+                        fontSize = 14.sp,
+                        color = Color.DarkGray,
+                    ),
+                    xAxisStyle = TextStyle(
+                        fontSize = 14.sp,
+                        color = Color.DarkGray,
+                        fontWeight = FontWeight.W400
+                    ),
+                    yAxisRange = 5,
+                    barWidth = 10.dp,
+                    spaceBetweenBars = Dimens.half_space,
+                    spaceBetweenGroups = Dimens.doubleSpace,
+                )
+            }
+
+        }
+
+
+    }
+
+
+    @Composable
+    fun RenderBarChart(
+        title: String,
+        yAxisData: List<Double>,
+        xAxisData: List<String>,
+        color: Color
+    ) {
         Box(Modifier.fillMaxWidth().height(400.dp)) {
             BarChart(
                 chartParameters = listOf(

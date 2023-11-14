@@ -16,6 +16,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -80,7 +81,7 @@ class ShowDetailScreen(private val title: String, val url:String, val trendUrl:S
                 IconButton(onClick = {
                     navigator.push(ChartScreen(title = title, url= url, trendUrl = trendUrl, startDate = startDate))
                 }) {
-                    Icon(imageVector = Icons.Default.ShowChart, contentDescription = "Display Charts" )
+                    Icon(imageVector = Icons.Default.BarChart, contentDescription = "Display Charts" )
                 }
             })
         }) {

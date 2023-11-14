@@ -28,11 +28,13 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import co.touchlab.kermit.Logger
 import com.aay.compose.barChart.BarChart
 import com.aay.compose.barChart.model.BarParameters
 import com.biggboss.shared.MR
 import dev.icerock.moko.resources.compose.stringResource
 import di.getScreenModel
+import io.github.aakira.napier.Napier
 import model.ParticipantItem
 import model.generateRandomColorExcludingWhite
 import ui.theme.Dimens
@@ -159,6 +161,7 @@ class ChartScreen(
                 for (week in lstWeeks) {
                     val currentWeek = participant.history?.firstOrNull { it.week == week  && it.notes?.contains(nominated) == true}
                     if (currentWeek != null) {
+                        Logger.d { "Week: $week, Participant: ${participant.name}, Vote: ${currentWeek.nominatedBy?.size}" }
                         lstVotes.add(currentWeek.nominatedBy?.size?.toDouble()?:0.0)
                     } else {
                         lstVotes.add(0.0)
@@ -174,7 +177,8 @@ class ChartScreen(
                 )
             }
 
-            Box(Modifier.fillMaxWidth().height(400.dp)) {
+            Box(Modifier.padding(Dimens.doubleSpace).fillMaxWidth().height(400.dp)) {
+
                 BarChart(
                     chartParameters = lstBarParameter,
                     gridColor = Color.DarkGray,
@@ -192,9 +196,9 @@ class ChartScreen(
                         fontWeight = FontWeight.W400
                     ),
                     yAxisRange = 5,
-                    barWidth = 10.dp,
-                    spaceBetweenBars = Dimens.half_space,
-                    spaceBetweenGroups = Dimens.doubleSpace,
+                    barWidth = Dimens.doubleSpace,
+                    spaceBetweenBars = 0.dp,
+                    spaceBetweenGroups = Dimens.forthSpace,
                 )
             }
 

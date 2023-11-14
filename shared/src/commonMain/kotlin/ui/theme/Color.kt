@@ -72,6 +72,6 @@ val yellowCard = Color(0xFFEFC935)
 val smallBossHouse = Color(0xFF4A7AEE)
 
 object PiColor {
-    val nominatedTo = Color(0xFF)
-    val nominatedBy = Color(0xFF)
+    val nominatedTo = Color(0xFF85DB88)
+    val nominatedBy = Color(0xFFCD534D)
 }

@@ -30,6 +30,8 @@ data class ParticipantItem(
 	val eliminatedDate: String? = null,
 	@SerialName("re_entry_date")
 	val reEntryDate:String? = null,
+	@SerialName("re_evicted_date")
+	val reEntryEvictedDate:String? =null,
 	@SerialName("name")
 	val name: String? = null,
 
@@ -49,7 +51,15 @@ data class ParticipantItem(
 	val dialNumber:String? = null,
 	@SerialName("history")
 	val history: List<HistoryItem>? = null
-)
+) {
+	fun isEliminated():Boolean {
+		if (!reEntryDate.isNullOrEmpty()) {
+			return !eliminatedDate.isNullOrEmpty() &&  !reEntryEvictedDate.isNullOrEmpty()
+		}else {
+			return !eliminatedDate.isNullOrEmpty()
+		}
+	}
+}
 
 
 inline fun <reified T> parseJsonToData(jsonString: String):T?{

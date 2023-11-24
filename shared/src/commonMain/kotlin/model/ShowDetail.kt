@@ -1,9 +1,7 @@
 package model
 
-import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
 import ui.component.shared.PiSingleNotification
 
@@ -30,7 +28,8 @@ data class ParticipantItem(
 	val startDate:String? = null,
 	@SerialName("eliminated_date")
 	val eliminatedDate: String? = null,
-
+	@SerialName("re_entry_date")
+	val reEntryDate:String? = null,
 	@SerialName("name")
 	val name: String? = null,
 

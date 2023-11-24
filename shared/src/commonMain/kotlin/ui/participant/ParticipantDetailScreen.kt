@@ -1,6 +1,5 @@
 package ui.participant
 
-import analytics.AnalyticLogger
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -117,15 +116,36 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
                     val startDate =
                         participantItem.startDate ?: PiGlobalInfo.episodeDetail?.startDate
                     startDate?.let {
-                        Text(
-                            "Start Date: $startDate",
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.padding(Dimens.doubleSpace)
-                        )
 
-                        val endDate = participantItem.eliminatedDate?.toDate() ?: Clock.System.now()
+                        if (participantItem.eliminatedDate!=null && participantItem.reEntryDate!=null) {
+                            Column {
+                                Text(
+                                    "Start Date: $startDate",
+                                    modifier = Modifier.padding(horizontal = Dimens.doubleSpace)
+                                )
+                                Text("1st Evicted Date: ${participantItem.eliminatedDate}",  modifier = Modifier.padding(horizontal= Dimens.doubleSpace))
+                                Text(
+                                    "Re-Entry Date: ${participantItem.reEntryDate}",
+                                    modifier = Modifier.padding(horizontal = Dimens.doubleSpace)
+                                )
+                            }
 
-                        RenderDayScreen("Days", startDate.toDate()?.daysSoFar(endDate).toString())
+
+
+                            val endDate = participantItem.eliminatedDate?.toDate()
+                            // Start Date - First Eliminated
+                            val firstNominationDates = startDate.toDate()?.daysSoFar(endDate!!)?:0L
+                            val reEntryDate = participantItem.reEntryDate?.toDate()?.daysSoFar(Clock.System.now())?:0L
+                            RenderDayScreen("Days", (firstNominationDates+reEntryDate).toString())
+                        } else {
+                            Text(
+                                "Start Date: $startDate",
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.padding(Dimens.doubleSpace)
+                            )
+                            val endDate = participantItem.eliminatedDate?.toDate() ?: Clock.System.now()
+                            RenderDayScreen("Days", startDate.toDate()?.daysSoFar(endDate).toString())
+                        }
 
 
                     }

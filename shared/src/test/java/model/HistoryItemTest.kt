@@ -15,7 +15,6 @@ class HistoryItemTest {
         showDetail = Json { ignoreUnknownKeys =true }.decodeFromString<ShowDetail>(strJson)
     }
 
-
     @Test
     fun testWhoINominatedFor() {
         showDetail.participants.let {

@@ -30,6 +30,7 @@ import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -147,7 +148,7 @@ fun renderSection(
                                     AssistChip(onClick = {
                                     }, label = {
                                         Text(
-                                            "Evicted",
+                                            if(participant.reEntryDate?.isNotBlank() == true) "Re-Entry" else "Evicted",
                                             style = MaterialTheme.typography.labelMedium,
                                             fontWeight = FontWeight.ExtraBold
                                         )
@@ -165,9 +166,19 @@ fun renderSection(
                     }
 
                     if(participant.eliminatedDate?.isNotBlank() == true) {
+
                         val startDate = participant.startDate?:showDetail.startDate
-                        participant.eliminatedDate.toDate()?.let {endDate->
-                            RenderDayScreen("Days", startDate?.toDate()?.daysSoFar(endDate).toString())
+                        if (participant.reEntryDate?.isNotBlank() == true) {
+                            val endDate = participant.eliminatedDate.toDate()
+                            // Start Date - First Eliminated
+                            val firstNominationDates = startDate?.toDate()?.daysSoFar(endDate!!)?:0L
+                            val reEvictedDate = participant.reEntryEvictedDate?.toDate()?:Clock.System.now()
+                            val reEntryDate = participant.reEntryDate.toDate()?.daysSoFar(reEvictedDate)?:0L
+                            RenderDayScreen("Days", (firstNominationDates+reEntryDate).toString())
+                        } else {
+                            participant.eliminatedDate.toDate()?.let {endDate->
+                                RenderDayScreen("Days", startDate?.toDate()?.daysSoFar(endDate).toString())
+                            }
                         }
                     }
 

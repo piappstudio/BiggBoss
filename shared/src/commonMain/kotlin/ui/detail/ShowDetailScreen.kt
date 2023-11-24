@@ -209,13 +209,13 @@ class ShowDetailScreen(private val title: String, val url:String, val trendUrl:S
 
 
                 val lstOthers =
-                    data.participants.filter { it.isNominated != true && it.isCaptain != true && it.eliminatedDate.isNullOrEmpty() }
+                    data.participants.filter { it.isNominated != true && it.isCaptain != true && (it.eliminatedDate.isNullOrEmpty() || (!it.reEntryDate.isNullOrEmpty() && it.reEntryEvictedDate.isNullOrEmpty()) ) }
                 if (lstOthers.isNotEmpty()) {
                     renderSection( MR.strings.title_others,this, lstOthers, data, analyticLogger)
                 }
 
 
-                val lstEliminated = data.participants.filter { !it.eliminatedDate.isNullOrEmpty() }.sortedByDescending { it.eliminatedDate?.toDate() }
+                val lstEliminated = data.participants.filter { it.isEliminated() }.sortedByDescending { it.eliminatedDate?.toDate() }
 
                 if (lstEliminated.isNotEmpty()) {
                     renderSection(MR.strings.title_eliminated, this, lstEliminated,  data, analyticLogger)

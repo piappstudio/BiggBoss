@@ -68,3 +68,10 @@ val seed = Color(0xFF984061)
 val captain = Color(0xFF2E9F49)
 val evicted = Color(0xFFEA4839)
 val nominated = Color(0xFFFCBC1F)
+val yellowCard = Color(0xFFEFC935)
+val smallBossHouse = Color(0xFF4A7AEE)
+
+object PiColor {
+    val nominatedTo = Color(0xFF85DB88)
+    val nominatedBy = Color(0xFFCD534D)
+}

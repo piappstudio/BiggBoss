@@ -55,6 +55,8 @@ kotlin {
                 implementation(libs.napier.log)
                 implementation(libs.kermit.log)
 
+                implementation (libs.chart)
+
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.google.code.gson )
 
@@ -69,6 +71,9 @@ kotlin {
                 implementation(libs.compose.preview)
                 api("androidx.core:core-ktx:1.12.0")
                 implementation(libs.ktor.android)
+
+                implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+                implementation("com.google.firebase:firebase-analytics-ktx")
             }
         }
         val iosX64Main by getting
@@ -81,6 +86,7 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
                 implementation(libs.ktor.ios)
+
             }
         }
         val desktopMain by getting {

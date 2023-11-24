@@ -1,3 +1,5 @@
+import analytics.AnalyticConstant
+import analytics.AnalyticLogger
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +30,7 @@ import ui.native.LinkLauncher
 import ui.theme.Dimens
 
 @Composable
-fun RenderTrendingScreen(lstTrends:List<TrendItem>?, linkLauncher: LinkLauncher) {
+fun RenderTrendingScreen(lstTrends:List<TrendItem>?, linkLauncher: LinkLauncher, analyticLogger: AnalyticLogger) {
     LazyColumn (modifier = Modifier.padding(Dimens.doubleSpace)) {
         lstTrends?.forEach { trendItem->
             item {
@@ -45,6 +47,7 @@ fun RenderTrendingScreen(lstTrends:List<TrendItem>?, linkLauncher: LinkLauncher)
                 items(lstItem) { trend->
                     Surface (modifier = Modifier.fillMaxWidth().padding(Dimens.space).piShadow().clickable {
                         trend.url?.let {
+                            analyticLogger.logEvent(AnalyticConstant.Event.YOUTUBE, mapOf(Pair(AnalyticConstant.Params.URL, it )))
                             linkLauncher.openLink(it)
                         }
 

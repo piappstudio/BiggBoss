@@ -20,9 +20,14 @@ kotlinx-datetime-version = "0.4.1"
 kermit-version = "2.0.0"
 junit = "4.13.2"
 gson = "2.9.0"
-
+firebase-version = "32.3.1"
+chart-version = "Beta-0.0.5"
+vico = "1.12.0"
+koalaplot = "0.4.0"
 [libraries]
 
+# Fireabse bom
+firebase-bom = {group = "com.google.firebase", name = "firebase-bom", version.ref ="firebase-version"}
 #test
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 # Gson
@@ -78,6 +83,12 @@ moko-resource-compose = {group = "dev.icerock.moko", name = "resources-compose",
 serialization-json = {group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json-verison"}
 #Asyn image loading
 kamel-image = {group = "media.kamel", name = "kamel-image", version.ref = "kamel-image-version"}
+
+# Chart
+chart = {group = "io.github.thechance101", name = "chart", version.ref = "chart-version"}
+# Fireabse
+kolalaplot = {group = "io.github.koalaplot", name = "koalaplot-core", version.ref ="koalaplot"}
+
 
 [bundles]
 voyager = ["voyager-navigator", "voyager-bottom-sheet", "voyager-tab-navigator", "voyager-transitions", "voyager-koin"]

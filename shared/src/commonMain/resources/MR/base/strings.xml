@@ -10,4 +10,11 @@
     <string name= "title_others">Other</string>
     <string name = "title_eliminated">Eliminated</string>
     <string name = "title_notification">Notification</string>
+    <string name = "title_red_card">Red Card</string>
+    <string name = "title_yellow_card">Yellow Card</string>
+    <string name = "title_nominated">Nominated</string>
+    <string name="title_evicted">Evicted</string>
+    <string name="title_sbh">SBH</string>
+    <string name="title_bbh">BBH</string>
+
 </resources>

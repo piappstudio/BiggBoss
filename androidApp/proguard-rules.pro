@@ -36,4 +36,6 @@
 
 -keep class io.kamel.** {*;}
 
+-keep class java.time.** { *; }
+
 -dontwarn org.slf4j.impl.StaticLoggerBinder

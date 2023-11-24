@@ -1,5 +1,6 @@
 package di
 
+import analytics.AnalyticLogger
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -8,6 +9,7 @@ import org.koin.compose.getKoin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.module
+import ui.chart.ChartViewModel
 import ui.detail.ShowDetailModel
 import ui.home.HomeScreenModel
 import ui.native.LinkLauncher
@@ -26,15 +28,22 @@ val viewModel = module {
     single {
         LinkLauncher()
     }
-    factory {
-        HomeScreenModel(get(), get())
+    single {
+        AnalyticLogger()
     }
     factory {
-        ShowDetailModel(get(), get())
+        HomeScreenModel(get(), get(), get())
+    }
+    factory {
+        ShowDetailModel(get(), get(),get())
     }
 
     factory {
-        ParticipantDetailViewModel(get(), get())
+        ParticipantDetailViewModel(get(), get(), get())
+    }
+
+    factory {
+        ChartViewModel(get(), get(), get())
     }
 
 }

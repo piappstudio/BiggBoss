@@ -1,5 +1,6 @@
 package ui.home
 
+import analytics.AnalyticLogger
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import co.touchlab.kermit.Logger
@@ -44,7 +45,7 @@ private data class HomeState(
     }
 }
 
-class HomeScreenModel(private val piRepository: PiRepository, val linkLauncher: LinkLauncher) : ScreenModel {
+class HomeScreenModel(private val piRepository: PiRepository, val linkLauncher: LinkLauncher, val analyticLogger: AnalyticLogger) : ScreenModel {
 
     private val _homeState = MutableStateFlow(HomeState())
     private val _homeScreenState: MutableStateFlow<HomeScreenState> =

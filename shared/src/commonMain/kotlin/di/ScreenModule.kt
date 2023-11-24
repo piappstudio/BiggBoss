@@ -8,7 +8,7 @@ import ui.home.HomeScreen
 
 sealed class BiggBossScreen:ScreenProvider {
     object Shows:BiggBossScreen()
-    data class ShowDetail(val title:String, val url:String, val trendUrl:String ):BiggBossScreen()
+    data class ShowDetail(val title:String, val url:String, val trendUrl:String, val startDate:String ):BiggBossScreen()
 }
 
 val bbScreenModule = screenModule {
@@ -16,6 +16,6 @@ val bbScreenModule = screenModule {
         HomeScreen()
     }
     register<BiggBossScreen.ShowDetail> { provider->
-        ShowDetailScreen(provider.title, provider.url, provider.trendUrl)
+        ShowDetailScreen(provider.title, provider.url, provider.trendUrl, provider.startDate)
     }
 }

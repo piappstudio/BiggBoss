@@ -110,14 +110,11 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.ExtraBold
                 )
-                val filteredGoldStarts =  participantItem.history?.filter {history-> history.notes?.any { note -> note.contains(
-                    "GS",
-                    true) } == true
-                }
+
                 // To render Gold Stars
-                if (filteredGoldStarts?.isNotEmpty() == true) {
+                if (participantItem.noOfStars()!=0) {
                     Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(Dimens.half_space)) {
-                        for (star in filteredGoldStarts) {
+                        for (star in 1..participantItem.noOfStars()) {
                             Icon(imageVector = Icons.Filled.Star, contentDescription = "Star", tint = PiColor.goldStar)
                         }
                     }

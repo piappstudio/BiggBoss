@@ -53,11 +53,16 @@ data class ParticipantItem(
 	val history: List<HistoryItem>? = null
 ) {
 	fun isEliminated():Boolean {
-		if (!reEntryDate.isNullOrEmpty()) {
-			return !eliminatedDate.isNullOrEmpty() &&  !reEntryEvictedDate.isNullOrEmpty()
+		return if (!reEntryDate.isNullOrEmpty()) {
+			!eliminatedDate.isNullOrEmpty() &&  !reEntryEvictedDate.isNullOrEmpty()
 		}else {
-			return !eliminatedDate.isNullOrEmpty()
+			!eliminatedDate.isNullOrEmpty()
 		}
+	}
+
+	fun noOfStars():Int {
+		val allNotes = history?.flatMap { it.notes?: emptyList() }
+		return allNotes?.count { note -> note.contains("GS", true) }?:0
 	}
 }
 

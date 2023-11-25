@@ -82,10 +82,8 @@ class ChartScreen(
                     state.showDetail?.participants?.let { lstParticipants ->
 
                         val allParticipantItem = lstParticipants.associate { participantItem ->
-                            val allNotes = participantItem.history?.flatMap { it.notes?: emptyList() }
-                            val counts = allNotes?.count { note -> note.contains(goldStar, true) }
                             (participantItem.name?.subSequence(0, 4).toString()) to
-                                    (counts?.toDouble() ?: 0.0)
+                                    (participantItem.noOfStars().toDouble() ?: 0.0)
                         }
 
                         val sortedEmployeeMap = allParticipantItem.toList()

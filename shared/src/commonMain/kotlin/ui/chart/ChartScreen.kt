@@ -34,10 +34,10 @@ import com.aay.compose.barChart.model.BarParameters
 import com.biggboss.shared.MR
 import dev.icerock.moko.resources.compose.stringResource
 import di.getScreenModel
-import io.github.aakira.napier.Napier
 import model.ParticipantItem
 import model.generateRandomColorExcludingWhite
 import ui.theme.Dimens
+import ui.theme.PiColor
 
 class ChartScreen(
     private val title: String,
@@ -77,6 +77,25 @@ class ChartScreen(
             LazyColumn(Modifier.padding(it).padding(Dimens.space)) {
                 item {
 
+                    val goldStar = "GS"
+                    RenderTitle("Gold Star Trending")
+                    state.showDetail?.participants?.let { lstParticipants ->
+
+                        val allParticipantItem = lstParticipants.associate { participantItem ->
+                            val allNotes = participantItem.history?.flatMap { it.notes?: emptyList() }
+                            val counts = allNotes?.count { note -> note.contains(goldStar, true) }
+                            (participantItem.name?.subSequence(0, 4).toString()) to
+                                    (counts?.toDouble() ?: 0.0)
+                        }
+
+                        val sortedEmployeeMap = allParticipantItem.toList()
+                            .sortedByDescending { it.second }
+                            .toMap()
+                        val xAxisData = sortedEmployeeMap.keys.toList()
+                        val yAxisData = sortedEmployeeMap.values.toList()
+                        RenderBarChart("Gold Star", yAxisData, xAxisData, PiColor.goldStar)
+                    }
+                    Spacer(modifier = Modifier.height(Dimens.doubleSpace))
                     val sbh = stringResource(MR.strings.title_sbh)
                     RenderTitle("Weekly Small Boss House Trending")
                     state.showDetail?.participants?.let { lstParticipants ->
@@ -115,10 +134,9 @@ class ChartScreen(
                         val yAxisData = sortedEmployeeMap.values.toList()
                         RenderBarChart(nominated, yAxisData, xAxisData, ui.theme.nominated)
                     }
-                    // Week wise nominations
+
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
-                    RenderWeeklyWiseVotingChart(state.showDetail?.participants)
-                    Spacer(modifier = Modifier.height(Dimens.doubleSpace))
+
                     // Captain
                     val captain = stringResource(MR.strings.title_captain)
                     RenderTitle("Weekly Captain Trending")
@@ -138,6 +156,11 @@ class ChartScreen(
                         val yAxisData = sortedEmployeeMap.values.toList()
                         RenderBarChart(captain, yAxisData, xAxisData, ui.theme.captain)
                     }
+
+                    // Week wise nominations
+                    Spacer(modifier = Modifier.height(Dimens.doubleSpace))
+                    RenderWeeklyWiseVotingChart(state.showDetail?.participants)
+                    Spacer(modifier = Modifier.height(Dimens.doubleSpace))
 
 
                 }
@@ -159,10 +182,12 @@ class ChartScreen(
             lstParticipants.forEach { participant ->
                 val lstVotes = mutableListOf<Double>()
                 for (week in lstWeeks) {
-                    val currentWeek = participant.history?.firstOrNull { it.week == week  && it.notes?.contains(nominated) == true}
+                    val currentWeek = participant.history?.firstOrNull {
+                        it.week == week && it.notes?.contains(nominated) == true
+                    }
                     if (currentWeek != null) {
                         Logger.d { "Week: $week, Participant: ${participant.name}, Vote: ${currentWeek.nominatedBy?.size}" }
-                        lstVotes.add(currentWeek.nominatedBy?.size?.toDouble()?:0.0)
+                        lstVotes.add(currentWeek.nominatedBy?.size?.toDouble() ?: 0.0)
                     } else {
                         lstVotes.add(0.0)
                     }

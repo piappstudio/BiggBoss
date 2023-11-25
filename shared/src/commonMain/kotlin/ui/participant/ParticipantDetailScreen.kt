@@ -16,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Icon
@@ -56,6 +57,7 @@ import model.piShadow
 import model.toDate
 import ui.component.shared.RenderDayScreen
 import ui.theme.Dimens
+import ui.theme.PiColor
 import ui.theme.captain
 import ui.theme.evicted
 import ui.theme.nominated
@@ -104,10 +106,23 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
 
                 Text(
                     participantItem.name ?: IConstant.EMPTY,
-                    modifier = Modifier.padding(Dimens.doubleSpace),
+                    modifier = Modifier.padding(horizontal = Dimens.doubleSpace).padding(top = Dimens.doubleSpace),
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.ExtraBold
                 )
+                val filteredGoldStarts =  participantItem.history?.filter {history-> history.notes?.any { note -> note.contains(
+                    "GS",
+                    true) } == true
+                }
+                // To render Gold Stars
+                if (filteredGoldStarts?.isNotEmpty() == true) {
+                    Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(Dimens.half_space)) {
+                        for (star in filteredGoldStarts) {
+                            Icon(imageVector = Icons.Filled.Star, contentDescription = "Star", tint = PiColor.goldStar)
+                        }
+                    }
+                }
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth().padding(end = Dimens.space),
@@ -187,12 +202,8 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
                     Spacer(modifier = Modifier.padding(Dimens.space))
                     history.sortedByDescending { historyItem -> historyItem.week }.forEachIndexed { index, historyItem->
 
-                        var isEvicted = false
-                        if (index == 0 && participantItem.eliminatedDate?.isNotEmpty() == true) {
-                            isEvicted = true
-                        }
                         Surface(modifier = Modifier.padding(Dimens.doubleSpace).piShadow()) {
-                            HistoryRow(historyItem, participantItem, isEvicted)
+                            HistoryRow(historyItem, participantItem)
                         }
                     }
 
@@ -235,7 +246,7 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
 
 
     @Composable
-    fun HistoryRow(history: HistoryItem, participantItem: ParticipantItem, isEvicted:Boolean) {
+    fun HistoryRow(history: HistoryItem, participantItem: ParticipantItem) {
 
         Column(modifier = Modifier.fillMaxWidth().padding(Dimens.doubleSpace)) {
             Text(
@@ -246,7 +257,9 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
             Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
 
                 // Evicted
-                if (isEvicted) {
+                if (history.notes?.any { note -> note.contains(
+                        stringResource(MR.strings.title_evicted),
+                        true) } == true)  {
                     AssistChip(modifier = Modifier.padding(Dimens.space), onClick = {
                     }, label = {
                         Text(stringResource(MR.strings.title_evicted))

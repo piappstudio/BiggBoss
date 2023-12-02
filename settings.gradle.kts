@@ -10,6 +10,8 @@ pluginManagement {
         mavenCentral()
         google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        // Desktop target has to add this repo
+        maven("https://jogamp.org/deployment/maven")
 
     }
 

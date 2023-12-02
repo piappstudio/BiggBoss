@@ -1,4 +1,6 @@
 package ui.theme
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFF00696A)
@@ -75,4 +77,8 @@ object PiColor {
     val nominatedTo = Color(0xFF85DB88)
     val nominatedBy = Color(0xFFCD534D)
     val goldStar = Color(0xFFD4AF37)
+}
+
+object PiBrush {
+   val background = Brush.linearGradient(colorStops = arrayOf(0.0f to Color.Magenta, 500.0f to Color.Cyan), start = Offset.Zero, end = Offset.Infinite)
 }

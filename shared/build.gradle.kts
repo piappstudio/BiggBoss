@@ -60,6 +60,10 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.google.code.gson )
 
+                // web view
+                api(libs.compose.webview)
+                implementation(libs.kotlinx.stdlib)
+
 
             }
         }

@@ -2,6 +2,7 @@ package ui.chart
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -159,6 +160,12 @@ class ChartScreen(
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
                     RenderWeeklyWiseVotingChart(state.showDetail?.participants)
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
+                    // Week wise nomiations in html
+                    RenderTitle("Weekly Captain Trending")
+                    PiWebChart(modifier = Modifier.fillMaxSize().height(600.dp), state.showDetail?.participants)
+                    Spacer(modifier = Modifier.height(Dimens.doubleSpace))
+
+
 
 
                 }

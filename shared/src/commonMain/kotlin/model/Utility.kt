@@ -26,6 +26,11 @@ fun String.toDate():Instant? {
 
 }
 
+fun Instant.daysUntilNow(): Long {
+    return this.until(Clock.System.now(), DateTimeUnit.DAY, TimeZone.UTC)
+}
+
+@Deprecated("Use daysUntilNow", replaceWith = ReplaceWith("daysUntilNow()"))
 fun Instant.daysSoFar(): Long {
     return this.until(Clock.System.now(), DateTimeUnit.DAY, TimeZone.UTC)
 }

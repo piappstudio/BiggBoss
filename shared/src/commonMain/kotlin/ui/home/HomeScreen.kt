@@ -43,6 +43,7 @@ import model.ReviewerItem
 import model.ShowItem
 import model.ShowList
 import model.daysSoFar
+import model.daysUntilNow
 import model.piShadow
 import model.toDate
 import ui.component.PiProgressIndicator
@@ -128,7 +129,7 @@ class HomeScreen : Screen {
                             }
                             Column (modifier = Modifier.padding(start = Dimens.space, end = Dimens.space), horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text("DAYS", style = MaterialTheme.typography.titleSmall)
-                                Text(item.startDate?.toDate()?.daysSoFar()?.toString()?:IConstant.EMPTY,style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
+                                Text(item.startDate?.toDate()?.daysUntilNow()?.toString()?:IConstant.EMPTY,style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
                             }
                         }
                     }

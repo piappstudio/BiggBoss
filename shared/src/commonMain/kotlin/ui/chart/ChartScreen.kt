@@ -155,19 +155,10 @@ class ChartScreen(
                         val yAxisData = sortedEmployeeMap.values.toList()
                         RenderBarChart(captain, yAxisData, xAxisData, ui.theme.captain)
                     }
-
-                    // Week wise nominations
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
-                    RenderWeeklyWiseVotingChart(state.showDetail?.participants)
+                    // Week wise nominations in html
+                    PiWebChart(modifier = Modifier.fillMaxSize().height(400.dp), state.showDetail?.participants)
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
-                    // Week wise nomiations in html
-                    RenderTitle("Weekly Captain Trending")
-                    PiWebChart(modifier = Modifier.fillMaxSize().height(600.dp), state.showDetail?.participants)
-                    Spacer(modifier = Modifier.height(Dimens.doubleSpace))
-
-
-
-
                 }
             }
 

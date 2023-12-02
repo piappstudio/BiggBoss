@@ -14,7 +14,6 @@ import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
-import dev.icerock.moko.graphics.parseColor
 import dev.icerock.moko.resources.compose.stringResource
 import model.ParticipantItem
 import model.generateRandomColorExcludingWhite
@@ -29,10 +28,17 @@ fun PiWebChart(modifier:Modifier = Modifier, participants: List<ParticipantItem>
             "    <title>Chart.js Example</title>\n" +
             "    <!-- Include Chart.js library -->\n" +
             "    <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>\n" +
+            "    <script src=\"https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom\"></script>\n"+
             "</head>" +
+            "<style>\n" +
+            "        canvas {\n" +
+            "            max-width: 100%;\n" +
+            "            height: auto;\n" +
+            "        }\n" +
+            "    </style>"+
             "\n" +
             "<body>\n" +
-            "<canvas id=\"myChart\" style=\"max-width: 100%; max-height: 100%;\">></canvas>\n" +
+            "<canvas id=\"myChart\"></canvas>\n" +
             "<script>\n" +
             "        // Update the chart function\n" +
             "        function updateChart() {\n" +
@@ -40,7 +46,16 @@ fun PiWebChart(modifier:Modifier = Modifier, participants: List<ParticipantItem>
             "            var canvas = document.getElementById('myChart');\n" +
             "\n" +
             "            var myChart = new Chart(ctx, {\n" +
-            "                type: 'line',\n" +
+            "                type: 'line',\n" +"  options: {\n responsive: true, maintainAspectRatio: false, " +
+
+            "        plugins: {\n" +
+            "          legend: {\n display: true," +
+
+            "            position: 'top',\n" +
+            "            align: 'center'\n" +
+            "          }\n" +
+            "        }\n" +
+            "      },"+
             "                data: {\n" +
             "                    labels: pilabels,\n" +
             "                    datasets: pidatasets\n" +
@@ -85,13 +100,13 @@ fun PiWebChart(modifier:Modifier = Modifier, participants: List<ParticipantItem>
             )
         }
 
-        val labels = lstWeeks.map { "Week: ${it}" }
+        val labels = lstWeeks.map { "Week: $it" }
 
         val mutDataSet = mutableListOf<String>()
         for (parameter in lstBarParameter) {
-            mutDataSet.add("{\n label: '${parameter.dataName}', data: ${parameter.data.map { it.toInt() }.joinToString(",", "[", "]")}," +
+            mutDataSet.add("{\n label: '${parameter.dataName.subSequence(0, 4)}', data: ${parameter.data.map { it.toInt() }.joinToString(",", "[", "]")}," +
                     "borderColor: '${colorToRgbaString(parameter.barColor) }',\n" +
-                    "borderWidth: 1}")
+                    "borderWidth: 1,   pointRadius: 6, pointHoverRadius: 8 }")
         }
 
         val dataSetString = mutDataSet.joinToString(",", "[", "]")

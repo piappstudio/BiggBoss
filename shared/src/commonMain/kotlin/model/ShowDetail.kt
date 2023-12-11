@@ -14,9 +14,7 @@ data class ShowDetail(
 	@SerialName("participants")
 	val participants: List<ParticipantItem>? = null,
 	val notifications: List<PiSingleNotification>? = null,
-
 	val startDate: String?=null
-
 	)
 
 @Serializable

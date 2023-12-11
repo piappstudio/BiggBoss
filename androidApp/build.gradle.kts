@@ -4,7 +4,6 @@ plugins {
     id("org.jetbrains.compose")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
-
 }
 
 kotlin {
@@ -34,7 +33,7 @@ android {
         applicationId = "com.piappstudio.biggboss"
         minSdk = (findProperty("android.minSdk") as String).toInt()
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
-        versionCode = 14
+        versionCode = 16
         versionName = "1.0"
     }
     compileOptions {

@@ -57,10 +57,10 @@ class HomeScreen : Screen {
     @Composable
     override fun Content() {
         val homeScreenModel = getScreenModel<HomeScreenModel>()
+        val state by homeScreenModel.homeScreenState.collectAsState()
         LaunchedEffect(Unit) {
             homeScreenModel.fetchShows()
         }
-        val state by homeScreenModel.homeScreenState.collectAsState()
         val currentNav = LocalNavigator.currentOrThrow
         
         val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -88,7 +88,7 @@ class HomeScreen : Screen {
                             homeScreenModel.analyticLogger.logEvent(AnalyticConstant.Event.CLICKED, mapOf(
                                 Pair(AnalyticConstant.Params.ACTION_NAME, item.title?:IConstant.EMPTY)
                             ) )
-                            currentNav.push(ShowDetailScreen(title = item.title?:IConstant.EMPTY, url= item.moreInfo?:IConstant.EMPTY, trendUrl = item.trends?:IConstant.EMPTY, startDate = item.startDate?:IConstant.EMPTY))
+                            currentNav.push(ShowDetailScreen(title = item.title?:IConstant.EMPTY, url= item.moreInfo?:IConstant.EMPTY, trendUrl = item.trends?:IConstant.EMPTY, startDate = item.startDate?:IConstant.EMPTY, voteUrl = item.votes?:IConstant.EMPTY))
                         }) { youtube ->
                             youtube.url?.let {
                                 homeScreenModel.analyticLogger.logEvent(AnalyticConstant.Event.YOUTUBE, mapOf(

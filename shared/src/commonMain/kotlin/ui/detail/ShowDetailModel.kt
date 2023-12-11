@@ -10,15 +10,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
 import model.HistoryItem
 import model.ParticipantItem
 import model.PiGlobalInfo
 import model.ShowDetail
-import model.Trend
 import model.TrendItem
+import model.VoteInfo
 import model.WeeklyInfo
-import model.toDate
 import network.PIError
 import network.PiRepository
 import network.Resource
@@ -31,7 +29,8 @@ data class EpisodeUiData(
     val inProgress: Boolean = false,
     val error: PIError? = null,
     val weeklyInfo: WeeklyInfo? = null,
-    val trend: List<TrendItem>? = null)
+    val trend: List<TrendItem>? = null,
+    val votes:VoteInfo? = null)
 
 
 open class ShowDetailModel(private val piRepository: PiRepository, val linkLauncher: LinkLauncher, val analyticLogger: AnalyticLogger) :
@@ -70,6 +69,39 @@ open class ShowDetailModel(private val piRepository: PiRepository, val linkLaunc
             }
         }
     }
+
+    fun fetchChartData(votesUrl: String) {
+        coroutineScope.launch(Dispatchers.IO) {
+            piRepository.fetchVotes(votesUrl).collect { result ->
+                Logger.i (result.status.toString())
+                when (result.status) {
+                    Resource.Status.LOADING -> {
+                        _episodeUiState.update { it.copy(inProgress = true) }
+                    }
+
+                    Resource.Status.ERROR -> {
+                        _episodeUiState.update { it.copy(inProgress = false, error = result.error) }
+                    }
+
+                    Resource.Status.SUCCESS -> {
+                        Logger.i("Votes: ${result.data.toString()}")
+                        _episodeUiState.update {
+                            it.copy(
+                                votes = result.data,
+                                inProgress = false
+                            )
+                        }
+                        PiGlobalInfo.voteInfo = result.data
+                    }
+
+                    else -> {
+                        _episodeUiState.update { it.copy(inProgress = true) }
+                    }
+                }
+            }
+        }
+    }
+
     fun fetchTrends(trendUrl: String) {
         coroutineScope.launch(Dispatchers.IO) {
             piRepository.fetchTrends(trendUrl).collect { result ->

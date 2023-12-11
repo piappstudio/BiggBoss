@@ -51,7 +51,7 @@ import ui.component.PiProgressIndicator
 import ui.participant.RenderUnofficialVoting
 import ui.theme.Dimens
 
-class ShowDetailScreen(private val title: String, val url:String, val trendUrl:String, val startDate:String) : Screen {
+class ShowDetailScreen(private val title: String, val url:String, val trendUrl:String, val startDate:String, val voteUrl:String) : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -64,6 +64,8 @@ class ShowDetailScreen(private val title: String, val url:String, val trendUrl:S
             if (state.showDetail==null) {
                 detailModel.fetchShowDetails(url, startDate)
                 detailModel.fetchTrends(trendUrl)
+                detailModel.fetchChartData(voteUrl)
+
             }
 
         }
@@ -79,7 +81,7 @@ class ShowDetailScreen(private val title: String, val url:String, val trendUrl:S
 
             }, actions = {
                 IconButton(onClick = {
-                    navigator.push(ChartScreen(title = title, url= url, trendUrl = trendUrl, startDate = startDate))
+                    navigator.push(ChartScreen(title = title, url= url, trendUrl = trendUrl, startDate = startDate, voteUrl = voteUrl))
                 }) {
                     Icon(imageVector = Icons.Default.BarChart, contentDescription = "Display Charts" )
                 }

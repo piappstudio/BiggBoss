@@ -185,6 +185,10 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
 
                     Spacer(modifier = Modifier.padding(Dimens.space))
                     RenderPerformanceGraph(participantItem)
+                    // To render voting details
+                    Spacer(modifier = Modifier.padding(Dimens.space))
+                    ParticipantDetailChart(participantItem.id?.toInt()?:0, lstPolls = PiGlobalInfo.voteInfo?.poll)
+                    Spacer(modifier = Modifier.height(Dimens.doubleSpace))
                 }
 
                 participantItem.history?.let { history ->

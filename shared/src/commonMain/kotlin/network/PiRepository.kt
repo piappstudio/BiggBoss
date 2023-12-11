@@ -3,40 +3,45 @@ package network
 import co.touchlab.kermit.Logger
 import di.PiNetwork
 import di.isNetworkAvailable
-import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToJsonElement
 import model.ShowDetail
 import model.ShowList
 import model.TrendItem
-import model.WeeklyInfo
-import network.PiRepository.FileNamee.DETAILS
-import network.PiRepository.FileNamee.SHOWS
-import network.PiRepository.FileNamee.TRENDS
+import model.VoteInfo
+import network.PiRepository.FileName.DETAILS
+import network.PiRepository.FileName.SHOWS
+import network.PiRepository.FileName.TRENDS
+import network.PiRepository.FileName.VOTES
 import ui.native.loadFromCache
 import ui.native.writeToCache
 
 class PiRepository(private val httpClient: HttpClient) {
 
-    object FileNamee {
+    object FileName {
         const val SHOWS = "shows"
         const val DETAILS  = "details"
         const val TRENDS = "trends"
+        const val VOTES = "votes"
     }
 
     suspend fun fetchShows(): Flow<Resource<ShowList?>> {
         return makeSafeApiCall (fileName = SHOWS) {
             val response =
                 httpClient.get(PiNetwork.URL.plus(PiNetwork.EndPoint.SHOWS)).body<ShowList>()
+            Resource.success(response)
+        }
+    }
+
+    suspend fun fetchVotes(voteUrl:String): Flow<Resource<VoteInfo?>> {
+        return makeSafeApiCall (fileName = VOTES+voteUrl.split("/").lastOrNull()) {
+            val response =
+                httpClient.get(voteUrl).body<VoteInfo>()
             Resource.success(response)
         }
     }

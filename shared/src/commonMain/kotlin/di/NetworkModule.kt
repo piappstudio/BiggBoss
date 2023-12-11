@@ -15,6 +15,7 @@ object PiNetwork {
         const val DETAIL = "json/shows/"
         const val WEEKLY_REPORT = "json/shows/week/week.json"
         const val TRENDS = "json/shows/"
+        const val VOTES = "json/shows/tamil/season7/votes.json"
     }
 }
 

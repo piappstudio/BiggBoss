@@ -62,8 +62,6 @@ kotlin {
 
                 // web view
                 api(libs.compose.webview)
-                implementation(libs.kotlinx.stdlib)
-
 
             }
         }

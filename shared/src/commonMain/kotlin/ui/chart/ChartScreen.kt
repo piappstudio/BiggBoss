@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -44,7 +43,8 @@ class ChartScreen(
     private val title: String,
     val url: String,
     val trendUrl: String,
-    val startDate: String
+    val startDate: String,
+    val voteUrl:String
 ) :
     Screen {
 
@@ -59,7 +59,9 @@ class ChartScreen(
             if (state.showDetail == null) {
                 detailModel.fetchShowDetails(url, startDate)
                 detailModel.fetchTrends(trendUrl)
+                detailModel.fetchChartData(voteUrl)
             }
+
         }
 
         Scaffold(topBar = {
@@ -80,16 +82,7 @@ class ChartScreen(
 
                     val goldStar = "GS"
                     RenderTitle("Gold Star Trending")
-                    state.showDetail?.participants?.let { lstParticipants ->
-
-                        val allParticipantItem = lstParticipants.associate { participantItem ->
-                            (participantItem.name?.subSequence(0, 4).toString()) to
-                                    (participantItem.noOfStars().toDouble() ?: 0.0)
-                        }
-
-                        val sortedEmployeeMap = allParticipantItem.toList()
-                            .sortedByDescending { it.second }
-                            .toMap()
+                   detailModel.filterMostNumberOfStars()?.let {sortedEmployeeMap->
                         val xAxisData = sortedEmployeeMap.keys.toList()
                         val yAxisData = sortedEmployeeMap.values.toList()
                         RenderBarChart("Gold Star", yAxisData, xAxisData, PiColor.goldStar)
@@ -97,38 +90,17 @@ class ChartScreen(
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
                     val sbh = stringResource(MR.strings.title_sbh)
                     RenderTitle("Weekly Small Boss House Trending")
-                    state.showDetail?.participants?.let { lstParticipants ->
-                        val allParticipantItem = lstParticipants.associate { participantItem ->
-                            (participantItem.name?.subSequence(0, 4).toString()) to
-                                    (participantItem.history?.filter { historyItem ->
-                                        historyItem.notes?.contains(
-                                            sbh
-                                        ) == true
-                                    }?.size?.toDouble() ?: 0.0)
-                        }
-                        val sortedEmployeeMap = allParticipantItem.toList()
-                            .sortedByDescending { it.second }
-                            .toMap()
-                        val xAxisData = sortedEmployeeMap.keys.toList()
-                        val yAxisData = sortedEmployeeMap.values.toList()
-                        RenderBarChart(sbh, yAxisData, xAxisData, ui.theme.smallBossHouse)
-                    }
+                   detailModel.filterBasedOnNotes(sbh)?.let { sortedEmployeeMap->
+                       val xAxisData = sortedEmployeeMap.keys.toList()
+                       val yAxisData = sortedEmployeeMap.values.toList()
+                       RenderBarChart(sbh, yAxisData, xAxisData, ui.theme.smallBossHouse)
+                   }
+
 
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
                     val nominated = stringResource(MR.strings.title_nominated)
                     RenderTitle("Most number of nominations")
-                    state.showDetail?.participants?.let { lstParticipants ->
-                        val allParticipantItem = lstParticipants.associate { participantItem ->
-                            (participantItem.name?.subSequence(0, 4).toString()) to
-                                    (participantItem.history?.filter { historyItem ->
-                                        historyItem.notes?.contains(
-                                            nominated
-                                        ) == true
-                                    }?.size?.toDouble() ?: 0.0)
-                        }
-                        val sortedEmployeeMap = allParticipantItem.toList()
-                            .sortedByDescending { it.second }
-                            .toMap()
+                    detailModel.filterBasedOnNotes(nominated)?.let {sortedEmployeeMap->
                         val xAxisData = sortedEmployeeMap.keys.toList()
                         val yAxisData = sortedEmployeeMap.values.toList()
                         RenderBarChart(nominated, yAxisData, xAxisData, ui.theme.nominated)
@@ -139,18 +111,7 @@ class ChartScreen(
                     // Captain
                     val captain = stringResource(MR.strings.title_captain)
                     RenderTitle("Weekly Captain Trending")
-                    state.showDetail?.participants?.let { lstParticipants ->
-                        val allParticipantItem = lstParticipants.associate { participantItem ->
-                            (participantItem.name?.subSequence(0, 4).toString()) to
-                                    (participantItem.history?.filter { historyItem ->
-                                        historyItem.notes?.contains(
-                                            captain
-                                        ) == true
-                                    }?.size?.toDouble() ?: 0.0)
-                        }
-                        val sortedEmployeeMap = allParticipantItem.toList()
-                            .sortedByDescending { it.second }
-                            .toMap()
+                    detailModel.filterBasedOnNotes(captain)?.let {sortedEmployeeMap->
                         val xAxisData = sortedEmployeeMap.keys.toList()
                         val yAxisData = sortedEmployeeMap.values.toList()
                         RenderBarChart(captain, yAxisData, xAxisData, ui.theme.captain)
@@ -159,6 +120,7 @@ class ChartScreen(
                     // Week wise nominations in html
                     PiWebChart(modifier = Modifier.fillMaxSize().height(400.dp), state.showDetail?.participants)
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
+                    PiOverallVotingChart(modifier = Modifier.fillMaxSize().height(400.dp), state.showDetail?.participants, polls = state.votes?.poll)
                 }
             }
 
@@ -179,7 +141,7 @@ class ChartScreen(
                 val lstVotes = mutableListOf<Double>()
                 for (week in lstWeeks) {
                     val currentWeek = participant.history?.firstOrNull {
-                        it.week == week && it.notes?.contains(nominated) == true
+                        it.week == week /*&& it.notes?.contains(nominated) == true*/
                     }
                     if (currentWeek != null) {
                         Logger.d { "Week: $week, Participant: ${participant.name}, Vote: ${currentWeek.nominatedBy?.size}" }

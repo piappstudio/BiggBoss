@@ -1,26 +1,23 @@
 package ui.chart
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import co.touchlab.kermit.Logger
 import com.aay.compose.barChart.model.BarParameters
-import com.biggboss.shared.MR
-import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
-import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
-import dev.icerock.moko.resources.compose.stringResource
 import model.ParticipantItem
+import model.PollItem
 import model.generateRandomColorExcludingWhite
+import ui.theme.Dimens
 
 @Composable
-fun PiWebChart(modifier:Modifier = Modifier, participants: List<ParticipantItem>?) {
-
+fun PiOverallVotingChart(
+    modifier: Modifier = Modifier,
+    participants: List<ParticipantItem>?,
+    polls: List<PollItem>?
+) {
     val html = "<!-- ... (previous HTML content) ... -->" +
             "\n <head>\n" +
             "    <meta charset=\"UTF-8\">\n" +
@@ -28,14 +25,14 @@ fun PiWebChart(modifier:Modifier = Modifier, participants: List<ParticipantItem>
             "    <title>Chart.js Example</title>\n" +
             "    <!-- Include Chart.js library -->\n" +
             "    <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>\n" +
-            "    <script src=\"https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom\"></script>\n"+
+            "    <script src=\"https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom\"></script>\n" +
             "</head>" +
             "<style>\n" +
             "        canvas {\n" +
             "            max-width: 100%;\n" +
             "            height: auto;\n" +
             "        }\n" +
-            "    </style>"+
+            "    </style>" +
             "\n" +
             "<body>\n" +
             "<canvas id=\"myChart\"></canvas>\n" +
@@ -46,7 +43,7 @@ fun PiWebChart(modifier:Modifier = Modifier, participants: List<ParticipantItem>
             "            var canvas = document.getElementById('myChart');\n" +
             "\n" +
             "            var myChart = new Chart(ctx, {\n" +
-            "                type: 'line',\n" +"  options: {\n responsive: true, maintainAspectRatio: false, " +
+            "                type: 'line',\n" + "  options: {\n responsive: true, maintainAspectRatio: false, " +
 
             "        plugins: {\n" +
             "          legend: {\n display: true," +
@@ -55,7 +52,7 @@ fun PiWebChart(modifier:Modifier = Modifier, participants: List<ParticipantItem>
             "            align: 'center'\n" +
             "          }\n" +
             "        }\n" +
-            "      },"+
+            "      }," +
             "                data: {\n" +
             "                    labels: pilabels,\n" +
             "                    datasets: pidatasets\n" +
@@ -69,28 +66,21 @@ fun PiWebChart(modifier:Modifier = Modifier, participants: List<ParticipantItem>
             "</body>\n" +
             "<!-- ... (rest of HTML content) ... -->\n"
 
+    polls?.forEach { pollItem ->
 
-    participants?.let { lstParticipants ->
-        val nominated = stringResource(MR.strings.title_nominated)
-        RenderTitle("Weekly nomination votes")
+        Spacer(modifier = Modifier.height(Dimens.doubleSpace))
+
+        RenderTitle("${pollItem.name} vote shares")
+
         val lstBarParameter = mutableListOf<BarParameters>()
-        val lstWeeks =
-            lstParticipants.flatMap { it.history ?: emptyList() }.mapNotNull { it.week }
-                .distinct()
-        lstParticipants.forEach { participant ->
+        val labels = pollItem.votes?.map { "Week ${it.week}" } ?: emptyList()
+        participants?.forEach { participant ->
             val lstVotes = mutableListOf<Double>()
-            for (week in lstWeeks) {
-                val currentWeek = participant.history?.firstOrNull {
-                    it.week == week /*&& it.notes?.contains(nominated) == true*/
-                }
-                if (currentWeek != null) {
-                    Logger.d { "Week: $week, Participant: ${participant.name}, Vote: ${currentWeek.nominatedBy?.size}" }
-                    lstVotes.add(currentWeek.nominatedBy?.size?.toDouble() ?: 0.0)
-                } else {
-                    lstVotes.add(0.0)
-                }
+            pollItem.votes?.forEach { weekInfo ->
+                val playerInfo =
+                    weekInfo.players?.firstOrNull { it.id.toString() == participant.id }
+                lstVotes.add((playerInfo?.percentage?.toDouble() ?: 0.0))
             }
-
             lstBarParameter.add(
                 BarParameters(
                     participant.name ?: "",
@@ -99,18 +89,23 @@ fun PiWebChart(modifier:Modifier = Modifier, participants: List<ParticipantItem>
                 )
             )
         }
-
-        val labels = lstWeeks.map { "Week: $it" }
-
         val mutDataSet = mutableListOf<String>()
         for (parameter in lstBarParameter) {
-            mutDataSet.add("{\n label: '${parameter.dataName.subSequence(0, 4)}', data: ${parameter.data.map { it.toInt() }.joinToString(",", "[", "]")}," +
-                    "borderColor: '${colorToRgbaString(parameter.barColor) }',\n" +
-                    "borderWidth: 1,   pointRadius: 6, pointHoverRadius: 8 }")
+            mutDataSet.add(
+                "{\n label: '${
+                    parameter.dataName.subSequence(
+                        0,
+                        4
+                    )
+                }', data: ${parameter.data.map { it.toInt() }.joinToString(",", "[", "]")}," +
+                        "borderColor: '${colorToRgbaString(parameter.barColor)}',\n" +
+                        "borderWidth: 1,   pointRadius: 6, pointHoverRadius: 8 }"
+            )
         }
 
         val dataSetString = mutDataSet.joinToString(",", "[", "]")
-        val htmlDataSet = html.replace("pidatasets", dataSetString).replace("pilabels", labels.joinToString(",", "[", "]"){"'${it}'"})
+        val htmlDataSet = html.replace("pidatasets", dataSetString)
+            .replace("pilabels", labels.joinToString(",", "[", "]") { "'${it}'" })
 
 
         val webViewState = rememberWebViewStateWithHTMLData(htmlDataSet)
@@ -125,21 +120,13 @@ fun PiWebChart(modifier:Modifier = Modifier, participants: List<ParticipantItem>
             }
         }
 
-
-        var jsRes by mutableStateOf("Chart Data")
         WebView(
             state = webViewState,
             modifier = modifier,
-            captureBackPresses = false)
+            captureBackPresses = false
+        )
+
+        Spacer(modifier = Modifier.height(Dimens.doubleSpace))
+
     }
-}
-
-fun colorToRgbaString(color: Color): String {
-    val argb = color.toArgb()
-    val red = (argb shr 16) and 0xFF
-    val green = (argb shr 8) and 0xFF
-    val blue = argb and 0xFF
-    val alpha = (argb shr 24) and (0xFF / 255.0).toInt() // Normalize alpha to a range of 0.0 to 1.0
-
-    return "rgba($red, $green, $blue, $alpha)"
 }

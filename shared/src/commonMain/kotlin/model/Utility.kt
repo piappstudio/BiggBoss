@@ -16,6 +16,7 @@ import kotlin.random.Random
 
 object PiGlobalInfo {
     var episodeDetail:ShowDetail?=null
+    var voteInfo:VoteInfo? = null
 }
 fun String.toDate():Instant? {
     return try {

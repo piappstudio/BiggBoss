@@ -26,7 +26,6 @@ vico = "1.12.0"
 koalaplot = "0.4.0"
 webview = "1.7.4"
 
-kotlin-stdlib = "1.9.21"
 [libraries]
 
 # Fireabse bom
@@ -39,7 +38,6 @@ google-code-gson = {group = "com.google.code.gson", name = "gson", version.ref =
 # Date time
 kotlinx-datetime = {group = "org.jetbrains.kotlinx",name = "kotlinx-datetime", version.ref = "kotlinx-datetime-version" }
 
-kotlinx-stdlib = {group= "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin-stdlib"}
 # For logging https://github.com/AAkira/Napier
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 compose-preview = {group = "org.jetbrains.compose.ui",name = "ui-tooling-preview", version.ref = "compose_version" }

@@ -34,5 +34,7 @@ data class ShowItem(
 	val startDate: String? = null,
 
 	@SerialName("trends")
-	val trends:String? = null
+	val trends:String? = null,
+	@SerialName("votes")
+	val votes:String?=null
 )

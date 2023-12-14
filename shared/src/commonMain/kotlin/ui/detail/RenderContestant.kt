@@ -31,7 +31,6 @@ import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import model.IConstant
@@ -42,7 +41,6 @@ import model.daysSoFar
 import model.piShadow
 import model.toDate
 import ui.component.shared.RenderDayScreen
-import ui.detail.ShowDetailScreen
 import ui.participant.ParticipantDetailScreen
 import ui.theme.Dimens
 import ui.theme.captain
@@ -144,11 +142,18 @@ fun renderSection(
                                 }
                             }
                             if (participant.eliminatedDate?.isNotBlank() == true) {
+                                var evictedLabel = "Evicted"
+                                if(participant.reEntryDate?.isNotBlank() == true) {
+                                    if (participant.reEntryEvictedDate.isNullOrEmpty()) {
+                                        evictedLabel = "Re-Entry"
+                                    }
+                                }
+
                                 Row {
                                     AssistChip(onClick = {
                                     }, label = {
                                         Text(
-                                            if(participant.reEntryDate?.isNotBlank() == true) "Re-Entry" else "Evicted",
+                                            evictedLabel,
                                             style = MaterialTheme.typography.labelMedium,
                                             fontWeight = FontWeight.ExtraBold
                                         )

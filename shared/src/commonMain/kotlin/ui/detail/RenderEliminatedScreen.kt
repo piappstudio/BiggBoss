@@ -17,7 +17,7 @@ import ui.theme.Dimens
 @Composable
 fun RenderEliminatedScreen(data: ShowDetail?, modifier: Modifier, analyticLogger: AnalyticLogger) {
     LazyColumn(modifier = modifier.fillMaxWidth().padding(Dimens.doubleSpace)) {
-        val lstNominated = data?.participants?.filter { it.isEliminated() }?.sortedByDescending { it.eliminatedDate?.toDate() }
+        val lstNominated = data?.participants?.filter { it.isEliminated() }?.sortedByDescending { it.reEntryEvictedDate?.toDate()?:it.eliminatedDate?.toDate() }
         if (lstNominated.isNullOrEmpty()) {
             item {
                 SingleNotification(modifier = Modifier.padding(Dimens.doubleSpace), PiSingleNotification("No eliminations at the moment", "No eliminations at the moment. Please wait, we will update the list as soon as possible"))

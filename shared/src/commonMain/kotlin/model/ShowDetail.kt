@@ -62,6 +62,16 @@ data class ParticipantItem(
 		val allNotes = history?.flatMap { it.notes?: emptyList() }
 		return allNotes?.count { note -> note.contains("GS", true) }?:0
 	}
+
+	fun noOfPoint():Int {
+		val totalTTF = history?.sumOf { weekHistory ->
+			weekHistory.notes?.filter { it.startsWith("TTF-") }
+				?.sumOf {
+					it.substringAfter("TTF-").toIntOrNull() ?: 1
+				} ?: 0
+		}
+		return totalTTF?:0
+	}
 }
 
 

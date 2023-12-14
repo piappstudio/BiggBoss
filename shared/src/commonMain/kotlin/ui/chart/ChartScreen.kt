@@ -44,7 +44,7 @@ class ChartScreen(
     val url: String,
     val trendUrl: String,
     val startDate: String,
-    val voteUrl:String
+    val voteUrl: String
 ) :
     Screen {
 
@@ -80,9 +80,16 @@ class ChartScreen(
             LazyColumn(Modifier.padding(it).padding(Dimens.space)) {
                 item {
 
-                    val goldStar = "GS"
+                    RenderTitle("Ticket to finally Board")
+                    detailModel.filterMostTTFScore()?.let { sortedEmployeeMap ->
+                        val xAxisData = sortedEmployeeMap.keys.toList()
+                        val yAxisData = sortedEmployeeMap.values.toList()
+                        RenderBarChart("TTF Board", yAxisData, xAxisData, PiColor.goldStar)
+                    }
+                    Spacer(modifier = Modifier.height(Dimens.doubleSpace))
+
                     RenderTitle("Gold Star Trending")
-                   detailModel.filterMostNumberOfStars()?.let {sortedEmployeeMap->
+                    detailModel.filterMostNumberOfStars()?.let { sortedEmployeeMap ->
                         val xAxisData = sortedEmployeeMap.keys.toList()
                         val yAxisData = sortedEmployeeMap.values.toList()
                         RenderBarChart("Gold Star", yAxisData, xAxisData, PiColor.goldStar)
@@ -90,17 +97,17 @@ class ChartScreen(
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
                     val sbh = stringResource(MR.strings.title_sbh)
                     RenderTitle("Weekly Small Boss House Trending")
-                   detailModel.filterBasedOnNotes(sbh)?.let { sortedEmployeeMap->
-                       val xAxisData = sortedEmployeeMap.keys.toList()
-                       val yAxisData = sortedEmployeeMap.values.toList()
-                       RenderBarChart(sbh, yAxisData, xAxisData, ui.theme.smallBossHouse)
-                   }
+                    detailModel.filterBasedOnNotes(sbh)?.let { sortedEmployeeMap ->
+                        val xAxisData = sortedEmployeeMap.keys.toList()
+                        val yAxisData = sortedEmployeeMap.values.toList()
+                        RenderBarChart(sbh, yAxisData, xAxisData, ui.theme.smallBossHouse)
+                    }
 
 
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
                     val nominated = stringResource(MR.strings.title_nominated)
                     RenderTitle("Most number of nominations")
-                    detailModel.filterBasedOnNotes(nominated)?.let {sortedEmployeeMap->
+                    detailModel.filterBasedOnNotes(nominated)?.let { sortedEmployeeMap ->
                         val xAxisData = sortedEmployeeMap.keys.toList()
                         val yAxisData = sortedEmployeeMap.values.toList()
                         RenderBarChart(nominated, yAxisData, xAxisData, ui.theme.nominated)
@@ -111,16 +118,23 @@ class ChartScreen(
                     // Captain
                     val captain = stringResource(MR.strings.title_captain)
                     RenderTitle("Weekly Captain Trending")
-                    detailModel.filterBasedOnNotes(captain)?.let {sortedEmployeeMap->
+                    detailModel.filterBasedOnNotes(captain)?.let { sortedEmployeeMap ->
                         val xAxisData = sortedEmployeeMap.keys.toList()
                         val yAxisData = sortedEmployeeMap.values.toList()
                         RenderBarChart(captain, yAxisData, xAxisData, ui.theme.captain)
                     }
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
                     // Week wise nominations in html
-                    PiWebChart(modifier = Modifier.fillMaxSize().height(400.dp), state.showDetail?.participants)
+                    PiWebChart(
+                        modifier = Modifier.fillMaxSize().height(400.dp),
+                        state.showDetail?.participants
+                    )
                     Spacer(modifier = Modifier.height(Dimens.doubleSpace))
-                    PiOverallVotingChart(modifier = Modifier.fillMaxSize().height(400.dp), state.showDetail?.participants, polls = state.votes?.poll)
+                    PiOverallVotingChart(
+                        modifier = Modifier.fillMaxSize().height(400.dp),
+                        state.showDetail?.participants,
+                        polls = state.votes?.poll
+                    )
                 }
             }
 

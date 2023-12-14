@@ -49,4 +49,20 @@ class ChartViewModel (private val piRepository: PiRepository, linkLauncher: Link
             }
 
         }
+
+    fun filterMostTTFScore(): Map<String, Double>? {
+            episodeUiData.value.showDetail?.participants?.let { lstParticipants ->
+                val allParticipantItem = lstParticipants.associate { participantItem ->
+                    (participantItem.name?.subSequence(0, 4).toString()) to
+                            participantItem.noOfPoint().toDouble()
+                }
+
+                return allParticipantItem.toList()
+                    .sortedByDescending { it.second }
+                    .toMap()
+            }?:run {
+                return null
+            }
+
+        }
 }

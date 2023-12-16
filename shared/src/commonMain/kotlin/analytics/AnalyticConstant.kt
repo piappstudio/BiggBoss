@@ -27,5 +27,6 @@ object AnalyticConstant {
         const val ACTION_NAME = "action_name"
         const val SCREEN_NAME = "screen_name"
         const val URL = "url"
+        const val PART_IDS = "Compare_IdS"
     }
 }

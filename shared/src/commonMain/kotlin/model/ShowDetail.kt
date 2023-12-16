@@ -1,5 +1,6 @@
 package model
 
+import kotlinx.datetime.Clock
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -63,6 +64,11 @@ data class ParticipantItem(
 		return allNotes?.count { note -> note.contains("GS", true) }?:0
 	}
 
+	fun countBasedOnKey(key:String):Int {
+		val allNotes = history?.flatMap { it.notes?: emptyList() }
+		return allNotes?.count { note -> note.compareTo(key, true) == 0 }?:0
+	}
+
 	fun noOfPoint():Int {
 		val totalTTF = history?.sumOf { weekHistory ->
 			weekHistory.notes?.filter { it.startsWith("TTF-") }
@@ -71,6 +77,28 @@ data class ParticipantItem(
 				} ?: 0
 		}
 		return totalTTF?:0
+	}
+
+	fun totalDays():String {
+		val startDate = startDate ?: PiGlobalInfo.episodeDetail?.startDate
+		var endDate = eliminatedDate?.toDate()
+		return if (eliminatedDate!=null && reEntryDate!=null) {
+			// Start Date - First Eliminated
+			val firstNominationDates = startDate?.toDate()?.daysSoFar(endDate!!)?:0L
+			val reEntryDate = reEntryDate.toDate()?.daysSoFar(Clock.System.now())?:0L
+			(firstNominationDates+reEntryDate).toString()
+		} else {
+			endDate = eliminatedDate?.toDate() ?: Clock.System.now()
+			startDate?.toDate()?.daysSoFar(endDate).toString()
+		}
+	}
+	fun howManyTimeINominated(arrOfKeys:List<Int>):Map<Int, Int> {
+		val map = mutableMapOf<Int,Int>()
+		arrOfKeys.forEach {key->
+			val count = history?.flatMap { it.nominations ?: emptyList() }?.count { key ==it }?:0
+			map[key] = count
+		}
+		return map
 	}
 }
 

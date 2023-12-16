@@ -25,7 +25,7 @@ chart-version = "Beta-0.0.5"
 vico = "1.12.0"
 koalaplot = "0.4.0"
 webview = "1.7.4"
-
+secrets-gradle-plugin="2.0.1"
 [libraries]
 
 # Fireabse bom
@@ -91,7 +91,7 @@ chart = {group = "io.github.thechance101", name = "chart", version.ref = "chart-
 # Fireabse
 kolalaplot = {group = "io.github.koalaplot", name = "koalaplot-core", version.ref ="koalaplot"}
 compose-webview = {group = "io.github.kevinnzou", name= "compose-webview-multiplatform", version.ref = "webview"}
-
+secrets-gradle = {group = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", name= "secrets-gradle-plugin", version.ref= "secrets-gradle-plugin"}
 [bundles]
 voyager = ["voyager-navigator", "voyager-bottom-sheet", "voyager-tab-navigator", "voyager-transitions", "voyager-koin"]
 moko-resources = ["moko-resource", "moko-resource-compose"]

@@ -10,6 +10,7 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.module
 import ui.chart.ChartViewModel
+import ui.compare.CompareViewModel
 import ui.detail.ShowDetailModel
 import ui.home.HomeScreenModel
 import ui.native.LinkLauncher
@@ -44,6 +45,10 @@ val viewModel = module {
 
     factory {
         ChartViewModel(get(), get(), get())
+    }
+
+    factory {
+        CompareViewModel(get())
     }
 
 }

@@ -1,5 +1,6 @@
 package ui.participant
 
+import analytics.AnalyticConstant
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Compare
+import androidx.compose.material.icons.filled.CompareArrows
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -55,6 +58,8 @@ import model.VotingOption
 import model.daysSoFar
 import model.piShadow
 import model.toDate
+import ui.compare.CompareParticipantDialog
+import ui.compare.CompareScreen
 import ui.component.shared.RenderDayScreen
 import ui.theme.Dimens
 import ui.theme.PiColor
@@ -79,12 +84,15 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
         val navigator = LocalNavigator.currentOrThrow
         val participantDetailViewModel = getScreenModel<ParticipantDetailViewModel>()
 
+        LaunchedEffect(Unit) {
+            participantDetailViewModel.analyticLogger.logEvent(AnalyticConstant.Event.SCREEN_VIEW, mapOf(Pair(AnalyticConstant.Params.SCREEN_NAME, "Participant Detail"), Pair(AnalyticConstant.Params.PARTICIPANT_NAME, participantItem.name?:"")))
+        }
+
         Scaffold {
             Column(
                 modifier = Modifier.padding(it).fillMaxWidth().verticalScroll(rememberScrollState())
             ) {
                 Box {
-
                     participantItem.fullImage?.let { url ->
                         KamelImage(
                             resource = asyncPainterResource(url),
@@ -100,6 +108,24 @@ class ParticipantDetailScreen(private val query: String, private val strVotingOp
                             imageVector = Icons.Default.ArrowBack,
                             tint = Color.White,
                             contentDescription = "Back Button"
+                        )
+                    }
+
+                    var showCompareScreen by remember { mutableStateOf(false) }
+                    if (showCompareScreen) {
+                        participantItem.id?.let { partId->
+                            CompareParticipantDialog(listOf(partId), participantDetailViewModel.analyticLogger) {
+                                showCompareScreen = false
+                            }
+                        }
+                    }
+                    IconButton(onClick = {
+                       showCompareScreen = true
+                    }, modifier = Modifier.padding(Dimens.space).align(Alignment.TopEnd)) {
+                        Icon(
+                            imageVector = Icons.Default.CompareArrows,
+                            tint = Color.White,
+                            contentDescription = "Compare participants"
                         )
                     }
                 }

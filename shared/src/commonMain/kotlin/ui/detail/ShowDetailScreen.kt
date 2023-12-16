@@ -17,6 +17,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.CompareArrows
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,8 +34,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -47,6 +52,7 @@ import model.piShadow
 import model.toDate
 import renderSection
 import ui.chart.ChartScreen
+import ui.compare.CompareParticipantDialog
 import ui.component.PiProgressIndicator
 import ui.participant.RenderUnofficialVoting
 import ui.theme.Dimens
@@ -84,6 +90,20 @@ class ShowDetailScreen(private val title: String, val url:String, val trendUrl:S
                     navigator.push(ChartScreen(title = title, url= url, trendUrl = trendUrl, startDate = startDate, voteUrl = voteUrl))
                 }) {
                     Icon(imageVector = Icons.Default.BarChart, contentDescription = "Display Charts" )
+                }
+                var showCompareScreen by remember { mutableStateOf(false) }
+                if (showCompareScreen) {
+                    CompareParticipantDialog(listOf(), detailModel.analyticLogger) {
+                        showCompareScreen = false
+                    }
+                }
+                IconButton(onClick = {
+                    showCompareScreen = true
+                }, modifier = Modifier.padding(Dimens.space)) {
+                    Icon(
+                        imageVector = Icons.Default.CompareArrows,
+                        contentDescription = "Compare participants"
+                    )
                 }
             })
         }) {

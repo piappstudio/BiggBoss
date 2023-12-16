@@ -4,6 +4,7 @@ buildscript {
     }
     dependencies {
         classpath (libs.moko.classpath)
+        classpath (libs.secrets.gradle)
     }
 }
 

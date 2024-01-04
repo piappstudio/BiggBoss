@@ -6,6 +6,9 @@
 
 Android Play Store link [Bigg Boss Tamil 7 Live Voting](https://play.google.com/store/apps/details?id=com.piappstudio.biggboss)
 
+we made a Tutorials to explan this concepts, please check out this Playlist too
+[ Bigg Boss App Development](Compose Multiplatform: https://www.youtube.com/playlist?list=PL8u30_s78ZuGobTKbQbP6nN-cX97Bo0Lb)
+
 ## Screenshots:
 ### Home
 <img src="readme_images/ios_home.png" height = "350">
